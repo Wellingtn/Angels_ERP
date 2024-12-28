@@ -13,7 +13,6 @@ class CustomUser(AbstractUser):
         return self.email
 
 class Vendedora(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='vendedora')
     nome = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='vendedoras/', null=True, blank=True)
     logradouro = models.CharField(max_length=200)

@@ -8,9 +8,8 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('estoque/', views.estoque, name='estoque'),
     path('catalogo/', views.catalogo, name='catalogo'),
-    path('vendedoras/cadastro/', views.cadastro_vendedora, name='cadastro_vendedora'),
     path('vendedoras/', views.vendedoras, name='vendedoras'),
+    path('vendedoras/cadastro/', views.cadastro_vendedora, name='cadastro_vendedora'),
     path('clientes/', views.clientes, name='clientes'),
-    path('cadastro-vendedora/', views.cadastro_vendedora, name='cadastro_vendedora'),
 ]
 

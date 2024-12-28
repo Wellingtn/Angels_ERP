@@ -268,50 +268,57 @@
 
                 <div class="container" style="max-width: 800px;">
                     <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <div class="mb-4">
                             <a href="{% url 'vendedoras' %}" class="btn btn-purple rounded-circle" style="width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; background-color: #9333ea; color: white;">
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         </div>
-                        {% csrf_token %}
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="photo-upload-container">
                                     <img id="photoPreview" class="photo-preview" alt="Profile preview">
-                                    <label for="foto" class="photo-upload-circle">
+                                    <label for="{{ form.foto.id_for_label }}" class="photo-upload-circle">
                                         <i class="fas fa-camera"></i>
                                     </label>
-                                    <input type="file" name="foto" id="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
+                                    {{ form.foto }}
                                 </div>
-                                <input type="text" name="nome" class="form-control mb-3" placeholder="Nome da Vendedora" required>
+                                {{ form.nome }}
                             </div>
                             <div class="col-md-8">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <input type="text" name="logradouro" class="form-control" placeholder="Logradouro" required>
+                                        {{ form.logradouro }}
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <input type="text" name="bairro" class="form-control" placeholder="Bairro" required>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <input type="text" name="cidade" class="form-control" placeholder="Cidade" required>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <input type="text" name="uf" class="form-control" placeholder="UF" required>
+                                        {{ form.bairro }}
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <input type="tel" name="telefone1" class="form-control" placeholder="Telefone 1" required>
+                                        {{ form.cidade }}
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <input type="tel" name="telefone2" class="form-control" placeholder="Telefone 2">
+                                        {{ form.uf }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        {{ form.telefone1 }}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        {{ form.telefone2 }}
                                     </div>
                                 </div>
                                 <div class="mb-3">
-                                    <textarea name="observacoes" class="form-control" placeholder="Observações" rows="3"></textarea>
+                                    {{ form.observacoes }}
                                 </div>
                                 <button type="submit" class="btn btn-primary mb-3 w-100">CADASTRAR VENDEDORA</button>
                             </div>
@@ -336,6 +343,8 @@
                 reader.readAsDataURL(file);
             }
         }
+
+        document.getElementById('{{ form.foto.id_for_label }}').addEventListener('change', previewImage);
     </script>
 </body>
 </html>

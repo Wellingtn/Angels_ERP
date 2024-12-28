@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraRegistrationForm
-from .models import Vendedora # Assuming you have a Vendedora model
-
+from django.contrib import messages
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraForm
+from .models import Vendedora
 
 def register(request):
     if request.method == 'POST':
@@ -47,20 +47,25 @@ def catalogo(request):
     return render(request, 'catalogo.html')
 
 @login_required
-def cadastro_vendedora(request):
-    if request.method == 'POST':
-        form = VendedoraRegistrationForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('vendedoras')  # Redireciona para a página de vendedoras após o cadastro bem-sucedido
-    else:
-        form = VendedoraRegistrationForm()
-    return render(request, 'cadastro_vendedora.html', {'form': form})
-
-@login_required
 def vendedoras(request):
     vendedoras = Vendedora.objects.all()
     return render(request, 'vendedoras.html', {'vendedoras': vendedoras})
 
+@login_required
+def cadastro_vendedora(request):
+    if request.method == 'POST':
+        form = VendedoraForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Vendedora cadastrada com sucesso!')
+            return redirect('vendedoras')
+        else:
+            messages.error(request, 'Erro ao cadastrar vendedora. Por favor, verifique os dados.')
+    else:
+        form = VendedoraForm()
+    return render(request, 'cadastro_vendedora.html', {'form': form})
+
+@login_required
 def clientes(request):
     return render(request, 'clientes.html')
+
