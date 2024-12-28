@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Angels ERP{% endblock %}
+
+{% block content %}
+<h2>Welcome to your Dashboard</h2>
+<p>Login successful! This is your dashboard.</p>
+<a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+{% endblock %}
+
