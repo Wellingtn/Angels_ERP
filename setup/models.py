@@ -12,3 +12,18 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+class Vendedora(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='vendedora')
+    nome = models.CharField(max_length=100)
+    foto = models.ImageField(upload_to='vendedoras/', null=True, blank=True)
+    logradouro = models.CharField(max_length=200)
+    bairro = models.CharField(max_length=100)
+    cidade = models.CharField(max_length=100)
+    uf = models.CharField(max_length=2)
+    telefone1 = models.CharField(max_length=20)
+    telefone2 = models.CharField(max_length=20, blank=True, null=True)
+    observacoes = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.nome
+

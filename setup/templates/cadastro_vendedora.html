@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Cadastro de Vendedora - Angels ERP{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Vendedora - Angels ERP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #9333ea;
+            min-height: 100vh;
+            display: flex;
+            align-items: stretch;
+        }
+        .sidebar {
+            background-color: #7e22ce;
+            color: white;
+            padding: 2rem;
+            width: 250px;
+        }
+        .sidebar .logo {
+            width: 120px;
+            margin-bottom: 2rem;
+        }
+        .sidebar .nav-link {
+            color: white;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #9333ea;
+            border-radius: 5px;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            width: 120px;
+            margin-bottom: 2rem;
+        }
+        .form-control {
+            border-radius: 25px;
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+        .btn-primary {
+            background-color: #9333ea;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem;
+            width: 100%;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #7e22ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+        }
+        .photo-upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .photo-upload-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-color: #f3e8ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #e9d5ff;
+            margin-bottom: 1rem;
+        }
+        .photo-upload-circle i {
+            color: #9333ea;
+            font-size: 4rem;
+        }
+        .photo-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            display: none;
+            border: 2px solid #e9d5ff;
+        }
+        .preview-active {
+            display: block;
+        }
+        .preview-active + .photo-upload-circle {
+            display: none;
+        }
+        .password-container {
+            position: relative;
+        }
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .form-row {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+        }
+        .photo-col {
+            width: 250px;
+            padding-right: 20px;
+        }
+        .fields-col {
+            flex: 1;
+        }
+        .full-width {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="logo">
+        <nav>
+            <a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="{% url 'estoque' %}" class="nav-link"><i class="fas fa-box"></i> Estoque</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fas fa-book"></i> Catálogo</a>
+            <a href="{% url 'vendedoras' %}" class="nav-link"><i class="fas fa-users"></i> Vendedoras</a>
+            <a href="{% url 'clientes' %}" class="nav-link"><i class="fas fa-user-friends"></i> Clientes</a>
+        </nav>
+    </div>
+    <div class="main-content">
+        <div class="card">
+            <div class="text-center">
+                <img src="{% static 'images/logo_Angels_preto.png' %}" alt="Angels Logo" class="logo">
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="photo-col">
+                        <div class="photo-upload-container">
+                            <img id="photoPreview" class="photo-preview" alt="Profile preview">
+                            <label for="foto" class="photo-upload-circle">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" name="foto" id="foto" class="d-none" accept="image/*" onchange="previewImage(event)">
+                        </div>
+                        <input type="text" name="nome" class="form-control" placeholder="Nome da Vendedora" required>
+                    </div>
+                    <div class="fields-col">
+                        <div class="form-row">
+                            <div class="form-col full-width">
+                                <input type="email" name="email" class="form-control" placeholder="Email" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="password-container">
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Senha" required>
+                                    <span class="password-toggle" onclick="togglePassword('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="password-container">
+                                    <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Confirmar Senha" required>
+                                    <span class="password-toggle" onclick="togglePassword('confirm_password')">
+                                        <i class="fas fa-eye"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" name="logradouro" class="form-control" placeholder="Logradouro" required>
+                            </div>
+                            <div class="form-col">
+                                <input type="text" name="bairro" class="form-control" placeholder="Bairro" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="text" name="cidade" class="form-control" placeholder="Cidade" required>
+                            </div>
+                            <div class="form-col">
+                                <input type="text" name="uf" class="form-control" placeholder="UF" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <input type="tel" name="telefone1" class="form-control" placeholder="Telefone 1" required>
+                            </div>
+                            <div class="form-col">
+                                <input type="tel" name="telefone2" class="form-control" placeholder="Telefone 2">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-col">
+                                <textarea name="observacoes" class="form-control" placeholder="Observações" rows="3"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mb-3">CADASTRAR VENDEDORA</button>
+                <div class="text-center">
+                    <a href="{% url 'vendedoras' %}" class="text-decoration-none" style="color: #9333ea;">
+                        Voltar para a lista de vendedoras
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('photoPreview');
+                    preview.src = e.target.result;
+                    preview.classList.add('preview-active');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm_password');
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('As senhas não coincidem. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
+

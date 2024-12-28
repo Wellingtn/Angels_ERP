@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraRegistrationForm
+from .models import Vendedora
 
 def register(request):
     if request.method == 'POST':
@@ -46,9 +47,21 @@ def catalogo(request):
 
 @login_required
 def vendedoras(request):
-    return render(request, 'vendedoras.html')
+    vendedoras = Vendedora.objects.all()
+    return render(request, 'vendedoras.html', {'vendedoras': vendedoras})
 
 @login_required
 def clientes(request):
     return render(request, 'clientes.html')
+
+@login_required
+def cadastro_vendedora(request):
+    if request.method == 'POST':
+        form = VendedoraRegistrationForm(request.POST, request.FILES)
+        if form.is_valid():
+            vendedora = form.save()
+            return redirect('vendedoras')
+    else:
+        form = VendedoraRegistrationForm()
+    return render(request, 'cadastro_vendedora.html', {'form': form})
 
