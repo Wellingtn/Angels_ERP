@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraForm
 from .models import Vendedora
 
@@ -57,15 +58,17 @@ def cadastro_vendedora(request):
         form = VendedoraForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Vendedora cadastrada com sucesso!')
-            return redirect('vendedoras')
+            return JsonResponse({'success': True})
         else:
-            messages.error(request, 'Erro ao cadastrar vendedora. Por favor, verifique os dados.')
-    else:
-        form = VendedoraForm()
-    return render(request, 'cadastro_vendedora.html', {'form': form})
+            return JsonResponse({'success': False, 'message': 'Formulário inválido. Verifique os dados.'})
+    return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
 def clientes(request):
     return render(request, 'clientes.html')
+
+@login_required
+def detalhes_vendedora(request, vendedora_id):
+    vendedora = get_object_or_404(Vendedora, id=vendedora_id)
+    return render(request, 'detalhes_vendedora.html', {'vendedora': vendedora})
 
