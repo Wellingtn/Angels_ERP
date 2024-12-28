@@ -165,7 +165,8 @@
             height: 120px;
             object-fit: cover;
             border-radius: 50%;
-            margin-bottom: 1rem;
+            margin: 0 auto 1rem;
+            display: block;
         }
         .seller-name {
             font-size: 1.25rem;
@@ -193,6 +194,20 @@
             font-weight: 500;
             margin-bottom: 0.25rem;
         }
+        .seller-photo-placeholder {
+            width: 120px;
+            height: 120px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        .seller-photo-placeholder i {
+            font-size: 3rem;
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +234,7 @@
                     <a class="nav-link mb-2" href="{% url 'catalogo' %}">
                         <i class="fas fa-book"></i> Catálogo
                     </a>
-                    <a class="nav-link mb-2" href="{% url 'vendedoras' %}">
+                    <a class="nav-link mb-2 active" href="{% url 'vendedoras' %}">
                         <i class="fas fa-users"></i> Vendedoras
                     </a>
                     <a class="nav-link mb-2" href="{% url 'clientes' %}">
@@ -258,15 +273,22 @@
                 </div>
 
                 <div class="row g-4">
+                    {% for vendedora in vendedoras %}
                     <div class="col-md-6 col-lg-4">
                         <div class="seller-card">
                             <div class="text-center">
-                                <img src="/placeholder.svg?height=120&width=120" alt="Foto da Vendedora" class="seller-photo">
-                                <h3 class="seller-name">Maria Silva</h3>
-                                <p class="seller-id">ID: V001</p>
+                                {% if vendedora.foto %}
+                                    <img src="{{ vendedora.foto.url }}" alt="Foto de {{ vendedora.nome }}" class="seller-photo">
+                                {% else %}
+                                    <div class="seller-photo-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                {% endif %}
+                                <h3 class="seller-name">{{ vendedora.nome }}</h3>
+                                <p class="seller-id">ID: {{ vendedora.id }}</p>
                             </div>
-                            <p><i class="fas fa-envelope me-2"></i>maria.silva@angels.com</p>
-                            <p><i class="fas fa-phone me-2"></i>(11) 98765-4321</p>
+                            <p><i class="fas fa-map-marker-alt me-2"></i>{{ vendedora.cidade }}, {{ vendedora.uf }}</p>
+                            <p><i class="fas fa-phone me-2"></i>{{ vendedora.telefone1 }}</p>
                             <div class="seller-stats">
                                 <h6>Desempenho</h6>
                                 <p><strong>Vendas do Mês:</strong> R$ 15.000,00</p>
@@ -280,7 +302,11 @@
                             </div>
                         </div>
                     </div>
-                    
+                    {% empty %}
+                    <div class="col-12">
+                        <p class="text-center">Nenhuma vendedora cadastrada ainda.</p>
+                    </div>
+                    {% endfor %}
                 </div>
             </main>
         </div>
