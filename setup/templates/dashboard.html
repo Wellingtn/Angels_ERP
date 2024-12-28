@@ -53,9 +53,10 @@
             width: 85%;
             border-radius: 1rem;
             transition: all 0.3s ease;
+            background-color: #7e22ce;
         }
         .sidebar .nav-link:hover, .sidebar .nav-link.active {
-            background-color: #7e22ce;
+            background-color: #6b21a8;
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
@@ -195,13 +196,19 @@
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link mb-2" href="{% url 'dashboard' %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'estoque' %}">
                         <i class="fas fa-box"></i> Estoque
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link mb-2" href="{% url 'catalogo' %}">
+                        <i class="fas fa-book"></i> Catálogo
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'vendedoras' %}">
                         <i class="fas fa-users"></i> Vendedoras
                     </a>
-                    <a class="nav-link" href="#">
+                    <a class="nav-link mb-2" href="{% url 'clientes' %}">
                         <i class="fas fa-user-friends"></i> Clientes
                     </a>
                     <div class="mt-auto mb-3">

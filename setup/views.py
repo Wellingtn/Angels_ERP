@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 
@@ -31,4 +31,24 @@ def user_login(request):
 @login_required
 def dashboard(request):
     return render(request, 'dashboard.html')
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect('login')
+
+@login_required
+def estoque(request):
+    return render(request, 'estoque.html')
+
+@login_required
+def catalogo(request):
+    return render(request, 'catalogo.html')
+
+@login_required
+def vendedoras(request):
+    return render(request, 'vendedoras.html')
+
+@login_required
+def clientes(request):
+    return render(request, 'clientes.html')
 
