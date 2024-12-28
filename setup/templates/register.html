@@ -3,12 +3,43 @@
 {% block title %}Register - Angels ERP{% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
-<p class="mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+{% load static %}
+<div class="card">
+    <div class="text-center">
+        <img src="{% static 'images/logo_Angels_preto.png' %}" alt="Angels Logo" class="logo">
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="username-container">
+            <input type="text" name="username" class="form-control" placeholder="Username" required>
+            <img id="photoPreview" class="photo-preview" alt="Profile preview">
+            <label for="profile_picture" class="photo-upload-circle">
+                <i class="fas fa-camera"></i>
+            </label>
+            <input type="file" name="profile_picture" id="profile_picture" class="d-none" accept="image/*" onchange="previewImage(event)">
+        </div>
+        <div class="mb-4">
+            <input type="email" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="mb-4 password-container">
+            <input type="password" name="password1" id="password1" class="form-control" placeholder="Password" required>
+            <span class="password-toggle" onclick="togglePassword('password1')">
+                <i class="fas fa-eye"></i>
+            </span>
+        </div>
+        <div class="mb-4 password-container">
+            <input type="password" name="password2" id="password2" class="form-control" placeholder="Confirm Password" required>
+            <span class="password-toggle" onclick="togglePassword('password2')">
+                <i class="fas fa-eye"></i>
+            </span>
+        </div>
+        <button type="submit" class="btn btn-primary mb-3">REGISTER</button>
+        <div class="text-center">
+            <a href="{% url 'login' %}" class="text-decoration-none" style="color: #9333ea;">
+                Already have an account? Login here
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}
 
