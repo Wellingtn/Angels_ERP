@@ -26,6 +26,17 @@ class VendedoraForm(forms.ModelForm):
         }
 
 
+class ProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['codigo', 'nome', 'foto', 'preco', 'quantidade']
+        widgets = {
+            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Código do Produto'}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
+            'preco': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Preço'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantidade Inicial'}),
+        }
+
 class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
@@ -37,15 +48,4 @@ class ClienteForm(forms.ModelForm):
             'cidade': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Cidade'}),
             'uf': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'UF'}),
             'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Telefone'}),
-        }
-
-class ProdutoForm(forms.ModelForm):
-    class Meta:
-        model = Produto
-        fields = ['codigo', 'nome', 'foto', 'preco', 'quantidade']
-        widgets = {
-            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Código do Produto'}),
-            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
-            'preco': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Preço'}),
-            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantidade Inicial'}),
         }

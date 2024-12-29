@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpResponse, FileResponse
-from .forms import VendedoraForm, ProdutoForm, CustomUserCreationForm
+from .forms import VendedoraForm, ProdutoForm, CustomUserCreationForm, ClienteForm
 from .models import Vendedora, Produto, Cliente
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -13,6 +13,7 @@ from io import BytesIO
 import os
 from django.conf import settings
 from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 def user_login(request):
     if request.method == 'POST':
@@ -49,6 +50,8 @@ def logout_view(request):
 @login_required
 def estoque(request):
     produtos = Produto.objects.all()
+    for produto in produtos:
+        produto.valor_total = produto.preco * produto.quantidade
     return render(request, 'estoque.html', {'produtos': produtos})
 
 @login_required
@@ -215,38 +218,90 @@ def atualizar_quantidade_produto(request):
         quantidade = request.POST.get('quantidade')
         try:
             produto = Produto.objects.get(id=produto_id)
-            produto.quantidade = quantidade
+            produto.quantidade = int(quantidade)
+            produto.valor_total = produto.preco * produto.quantidade
             produto.save()
-            return JsonResponse({'success': True})
+            return JsonResponse({
+                'success': True,
+                'valor_total': produto.valor_total,
+                'message': 'Quantidade e valor total atualizados com sucesso!'
+            })
         except Produto.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Produto não encontrado'})
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Quantidade inválida'})
     return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
 def clientes(request):
     clientes = Cliente.objects.all()
-    return render(request, 'clientes.html', {'clientes': clientes})
+    form = ClienteForm()
+    return render(request, 'clientes.html', {'clientes': clientes, 'form': form})
 
 @login_required
 def cadastro_cliente(request):
     if request.method == 'POST':
-        # Implement client registration logic here
-        pass
-    return render(request, 'cadastro_cliente.html')
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({
+                'success': True,
+                'id': cliente.id,
+                'nome': cliente.nome,
+                'logradouro': cliente.logradouro,
+                'bairro': cliente.bairro,
+                'cidade': cliente.cidade,
+                'uf': cliente.uf,
+                'telefone': cliente.telefone,
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
 def editar_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
     if request.method == 'POST':
-        # Implement client editing logic here
-        pass
-    return render(request, 'editar_cliente.html', {'cliente': cliente})
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({
+                'success': True,
+                'id': cliente.id,
+                'nome': cliente.nome,
+                'logradouro': cliente.logradouro,
+                'bairro': cliente.bairro,
+                'cidade': cliente.cidade,
+                'uf': cliente.uf,
+                'telefone': cliente.telefone,
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
+@require_POST
 def excluir_cliente(request, cliente_id):
     cliente = get_object_or_404(Cliente, id=cliente_id)
-    if request.method == 'POST':
-        cliente.delete()
-        return JsonResponse({'success': True})
-    return JsonResponse({'success': False, 'message': 'Método não permitido'})
+    cliente.delete()
+    return JsonResponse({'success': True, 'message': 'Cliente excluído com sucesso'})
+
+@login_required
+@require_POST
+def editar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    form = ProdutoForm(request.POST, request.FILES, instance=produto)
+    if form.is_valid():
+        produto = form.save()
+        return JsonResponse({
+            'success': True,
+            'id': produto.id,
+            'nome': produto.nome,
+            'codigo': produto.codigo,
+            'preco': str(produto.preco),
+            'quantidade': produto.quantidade,
+            'foto_url': produto.foto.url if produto.foto else None
+        })
+    else:
+        return JsonResponse({'success': False, 'errors': form.errors})
 
