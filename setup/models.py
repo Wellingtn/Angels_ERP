@@ -22,9 +22,16 @@ class Vendedora(models.Model):
     telefone1 = models.CharField(max_length=20)
     telefone2 = models.CharField(max_length=20, blank=True, null=True)
     observacoes = models.TextField(blank=True)
+    contrato = models.FileField(upload_to='contratos/', null=True, blank=True)
 
     def __str__(self):
         return self.nome
+
+    def delete(self, *args, **kwargs):
+        if self.contrato:
+            if os.path.isfile(self.contrato.path):
+                os.remove(self.contrato.path)
+        super(Vendedora, self).delete(*args, **kwargs)
 
 class Produto(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
@@ -36,7 +43,6 @@ class Produto(models.Model):
     def __str__(self):
         return f"{self.codigo} - {self.nome}"
 
-from django.db import models
 
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)

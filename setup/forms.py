@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser, Vendedora, Cliente
+from .models import CustomUser, Vendedora, Cliente, Produto
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
@@ -39,3 +39,13 @@ class ClienteForm(forms.ModelForm):
             'telefone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Telefone'}),
         }
 
+class ProdutoForm(forms.ModelForm):
+    class Meta:
+        model = Produto
+        fields = ['codigo', 'nome', 'foto', 'preco', 'quantidade']
+        widgets = {
+            'codigo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Código do Produto'}),
+            'nome': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nome do Produto'}),
+            'preco': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Preço'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantidade Inicial'}),
+        }

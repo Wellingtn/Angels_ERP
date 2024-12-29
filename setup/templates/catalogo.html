@@ -340,6 +340,10 @@
                             <label for="id_preco" class="form-label">Preço</label>
                             <input type="number" class="form-control" id="id_preco" name="preco" step="0.01" required>
                         </div>
+                        <div class="mb-3">
+                            <label for="id_quantidade" class="form-label">Quantidade Inicial</label>
+                            <input type="number" class="form-control" id="id_quantidade" name="quantidade" required>
+                        </div>
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -371,6 +375,11 @@
             document.getElementById('newProductForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
+                
+                console.log("Enviando formulário...");
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
 
                 fetch('{% url "cadastro_produto" %}', {
                     method: 'POST',
@@ -379,13 +388,17 @@
                         'X-CSRFToken': formData.get('csrfmiddlewaretoken')
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("Resposta recebida:", response);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Dados da resposta:", data);
                     if (data.success) {
                         alert('Produto cadastrado com sucesso!');
                         location.reload(); // Recarrega a página para mostrar o novo produto
                     } else {
-                        alert('Erro ao cadastrar produto: ' + data.message);
+                        alert('Erro ao cadastrar produto: ' + JSON.stringify(data.errors));
                     }
                 })
                 .catch(error => {
