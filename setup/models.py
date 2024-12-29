@@ -26,7 +26,6 @@ class Vendedora(models.Model):
     def __str__(self):
         return self.nome
 
-
 class Produto(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     nome = models.CharField(max_length=100)
@@ -36,4 +35,17 @@ class Produto(models.Model):
 
     def __str__(self):
         return f"{self.codigo} - {self.nome}"
+
+from django.db import models
+
+class Cliente(models.Model):
+    nome = models.CharField(max_length=100)
+    logradouro = models.CharField(max_length=200, default="Não informado")
+    bairro = models.CharField(max_length=100, default="Não informado")
+    cidade = models.CharField(max_length=100, default="Não informada")
+    uf = models.CharField(max_length=2, default="UF")
+    telefone = models.CharField(max_length=20, default="Não informado")
+
+    def __str__(self):
+        return self.nome
 

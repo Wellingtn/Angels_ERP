@@ -3,8 +3,8 @@ from django.contrib.auth import login, authenticate, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraForm
-from .models import Vendedora, Produto
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, VendedoraForm, ClienteForm
+from .models import Vendedora, Produto, Cliente
 
 def register(request):
     if request.method == 'POST':
@@ -89,7 +89,48 @@ def cadastro_produto(request):
 
 @login_required
 def clientes(request):
-    return render(request, 'clientes.html')
+    clientes = Cliente.objects.all()
+    return render(request, 'clientes.html', {'clientes': clientes})
+
+@login_required
+def cadastro_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({
+                'success': True,
+                'id': cliente.id,
+                'nome': cliente.nome,
+                'logradouro': cliente.logradouro,
+                'bairro': cliente.bairro,
+                'cidade': cliente.cidade,
+                'uf': cliente.uf,
+                'telefone': cliente.telefone
+            })
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    return JsonResponse({'success': False, 'message': 'Método não permitido'})
+
+@login_required
+def editar_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    if request.method == 'POST':
+        form = ClienteForm(request.POST, instance=cliente)
+        if form.is_valid():
+            form.save()
+            return redirect('clientes')
+    else:
+        form = ClienteForm(instance=cliente)
+    return render(request, 'editar_cliente.html', {'form': form, 'cliente': cliente})
+
+@login_required
+def excluir_cliente(request, cliente_id):
+    cliente = get_object_or_404(Cliente, id=cliente_id)
+    if request.method == 'POST':
+        cliente.delete()
+        return JsonResponse({'success': True})
+    return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
 def detalhes_vendedora(request, vendedora_id):
