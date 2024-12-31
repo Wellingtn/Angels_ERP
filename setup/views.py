@@ -305,3 +305,142 @@ def editar_produto(request, produto_id):
     else:
         return JsonResponse({'success': False, 'errors': form.errors})
 
+@login_required
+def novo_acerto(request):
+    vendedoras = Vendedora.objects.all()
+    return render(request, 'novo_acerto.html', {'vendedoras': vendedoras})
+
+@login_required
+def editar_produto(request, produto_id):
+    produto = get_object_or_404(Produto, id=produto_id)
+    if request.method == 'POST':
+        form = ProdutoForm(request.POST, request.FILES, instance=produto)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'success': True, 'message': 'Produto atualizado com sucesso!'})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+    else:
+        form = ProdutoForm(instance=produto)
+    return render(request, 'editar_produto.html', {'form': form, 'produto': produto})
+
+@login_required
+def acerto_vendedora(request, vendedora_id=None):
+    vendedoras = Vendedora.objects.all()
+    context = {'vendedoras': vendedoras}
+    
+    if vendedora_id:
+        vendedora = get_object_or_404(Vendedora, id=vendedora_id)
+        estoque_vendedora = EstoqueVendedora.objects.filter(vendedora=vendedora).select_related('produto')
+        context.update({
+            'vendedora': vendedora,
+            'estoque_vendedora': estoque_vendedora,
+        })
+    
+    return render(request, 'acerto_vendedora.html', context)
+
+
+@login_required
+def get_vendedora_info(request):
+    vendedora_id = request.GET.get('vendedora_id')
+    vendedora = get_object_or_404(Vendedora, id=vendedora_id)
+    return JsonResponse({
+        'logradouro': vendedora.logradouro,
+        'bairro': vendedora.bairro,
+        'cidade': vendedora.cidade,
+        'telefone1': vendedora.telefone1
+    })
+
+    produtos = [
+        {
+            'id': item.produto.id,
+            'nome': item.produto.nome,
+            'quantidade': item.quantidade,
+            'preco': float(item.produto.preco)
+        }
+        for item in estoque_vendedora
+    ]
+    
+    produtos_disponiveis = [
+        {
+            'id': produto.id,
+            'nome': produto.nome,
+            'preco': float(produto.preco)
+        }
+        for produto in Produto.objects.all()
+    ]
+    
+    return JsonResponse({
+        'id': vendedora.id,
+        'nome': vendedora.nome,
+        'produtos': produtos,
+        'produtos_disponiveis': produtos_disponiveis
+    })
+
+@require_POST
+@login_required
+def concluir_acerto(request):
+    data = json.loads(request.body)
+    
+    try:
+        with transaction.atomic():
+            # Create Acerto
+            acerto = Acerto.objects.create(
+                vendedora_id=data['vendedora_id'],
+                numero_pedido=data['order_number'],
+                data_pedido=timezone.now().date(),
+                data_acerto=data['data_acerto'],
+                cidade=data['cidade'],
+                total=Decimal(data['total'])
+            )
+            
+            # Process each item
+            for item in data['items']:
+                produto = Produto.objects.get(codigo=item['ref'])
+                
+                # Create ItemAcerto
+                ItemAcerto.objects.create(
+                    acerto=acerto,
+                    produto=produto,
+                    quantidade=item['quantity'],
+                    valor_unitario=Decimal(item['price']),
+                    valor_total=Decimal(item['total'])
+                )
+                
+                # Update product stock
+                produto.quantidade -= int(item['quantity'])
+                produto.save()
+                
+                # Update or create EstoqueVendedora
+                estoque_vendedora, created = EstoqueVendedora.objects.get_or_create(
+                    vendedora_id=data['vendedora_id'],
+                    produto=produto,
+                    defaults={'quantidade': 0}
+                )
+                estoque_vendedora.quantidade += int(item['quantity'])
+                estoque_vendedora.save()
+            
+            return JsonResponse({'success': True})
+            
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+
+@login_required
+def get_produto_info(request):
+    codigo = request.GET.get('codigo')
+    try:
+        produto = Produto.objects.get(codigo=codigo)
+        return JsonResponse({
+            'success': True,
+            'id': produto.id,
+            'nome': produto.nome,
+            'preco': str(produto.preco),
+            'quantidade_disponivel': produto.quantidade
+        })
+    except Produto.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Produto não encontrado'
+        })

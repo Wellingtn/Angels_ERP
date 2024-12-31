@@ -23,6 +23,7 @@ class Vendedora(models.Model):
     telefone2 = models.CharField(max_length=20, blank=True, null=True)
     observacoes = models.TextField(blank=True)
     contrato = models.FileField(upload_to='contratos/', null=True, blank=True)
+    produtos = models.ManyToManyField('Produto', through='EstoqueVendedora')
 
     def __str__(self):
         return self.nome
@@ -33,15 +34,28 @@ class Vendedora(models.Model):
                 os.remove(self.contrato.path)
         super(Vendedora, self).delete(*args, **kwargs)
 
+
+class EstoqueVendedora(models.Model):
+    vendedora = models.ForeignKey(Vendedora, on_delete=models.CASCADE)
+    produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('vendedora', 'produto')
+
+    def __str__(self):
+        return f"{self.vendedora.nome} - {self.produto.nome}: {self.quantidade}"
+
 class Produto(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     nome = models.CharField(max_length=100)
     foto = models.ImageField(upload_to='produtos/', null=True, blank=True)
     preco = models.DecimalField(max_digits=10, decimal_places=2)
-    quantidade = models.IntegerField(default=0)
+    quantidade = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.codigo} - {self.nome}"
+
 
 
 class Cliente(models.Model):
@@ -55,3 +69,25 @@ class Cliente(models.Model):
     def __str__(self):
         return self.nome
 
+class Acerto(models.Model):
+    vendedora = models.ForeignKey(Vendedora, on_delete=models.CASCADE, related_name='acertos')
+    numero_pedido = models.CharField(max_length=10)
+    data_pedido = models.DateField()
+    data_acerto = models.DateField()
+    cidade = models.CharField(max_length=100)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Acerto {self.numero_pedido} - {self.vendedora.nome}"
+
+
+class ItemAcerto(models.Model):
+    acerto = models.ForeignKey(Acerto, on_delete=models.CASCADE, related_name='items')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
+    valor_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.acerto.numero_pedido} - {self.produto.nome}"

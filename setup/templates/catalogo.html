@@ -264,28 +264,6 @@
             border-radius: 50rem;
             overflow: hidden;
         }
-        .edit-button {
-            position: absolute;
-            bottom: 1rem;
-            right: 1rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #9333ea;
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .edit-button:hover {
-            background-color: #7e22ce;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
-        }
     </style>
 </head>
 <body>
@@ -296,7 +274,7 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
-                    <a class="btn btn-highlight mb-2" href="#">
+                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
                     <a class="btn btn-highlight mb-2" href="#">
@@ -368,9 +346,6 @@
                                 <p class="product-code">Código: {{ produto.codigo }}</p>
                                 <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
                             </div>
-                            <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editProductModal" data-produto-id="{{ produto.id }}">
-                                <i class="fas fa-pencil-alt"></i>
-                            </button>
                         </div>
                     </div>
                     {% empty %}
@@ -427,82 +402,33 @@
         </div>
     </div>
 
-    <!-- Modal de Edição de Produto -->
-    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProductModalLabel">Editar Produto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" enctype="multipart/form-data" id="editProductForm">
-                        {% csrf_token %}
-                        <input type="hidden" id="edit_produto_id" name="produto_id">
-                        <div class="text-center mb-3">
-                            <img id="editPhotoPreview" class="photo-preview mb-3" alt="Foto do Produto">
-                            <label for="edit_foto" class="photo-upload-circle mb-3">
-                                <i class="fas fa-camera"></i>
-                            </label>
-                            <input type="file" name="foto" id="edit_foto" class="d-none" accept="image/*">
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_codigo" class="form-label">Código</label>
-                            <input type="text" class="form-control" id="edit_codigo" name="codigo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_nome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="edit_nome" name="nome" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_preco" class="form-label">Preço</label>
-                            <input type="number" class="form-control" id="edit_preco" name="preco" step="0.01" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="edit_quantidade" class="form-label">Quantidade</label>
-                            <input type="number" class="form-control" id="edit_quantidade" name="quantidade" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" form="editProductForm" class="btn btn-primary">Salvar Alterações</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Preview da foto para novo produto
+            // Preview da foto
             document.getElementById('id_foto').addEventListener('change', function(event) {
-                previewImage(event, 'photoPreview');
-            });
-
-            // Preview da foto para edição de produto
-            document.getElementById('edit_foto').addEventListener('change', function(event) {
-                previewImage(event, 'editPhotoPreview');
-            });
-
-            function previewImage(event, previewId) {
                 const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        const preview = document.getElementById(previewId);
+                        const preview = document.getElementById('photoPreview');
                         preview.src = e.target.result;
                         preview.classList.add('preview-active');
                     }
                     reader.readAsDataURL(file);
                 }
-            }
+            });
 
-            // Envio do formulário de novo produto via AJAX
+            // Envio do formulário via AJAX
             document.getElementById('newProductForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
                 
+                console.log("Enviando formulário...");
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
+
                 fetch('{% url "cadastro_produto" %}', {
                     method: 'POST',
                     body: formData,
@@ -510,11 +436,15 @@
                         'X-CSRFToken': formData.get('csrfmiddlewaretoken')
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("Resposta recebida:", response);
+                    return response.json();
+                })
                 .then(data => {
+                    console.log("Dados da resposta:", data);
                     if (data.success) {
                         alert('Produto cadastrado com sucesso!');
-                        location.reload();
+                        location.reload(); // Recarrega a página para mostrar o novo produto
                     } else {
                         alert('Erro ao cadastrar produto: ' + JSON.stringify(data.errors));
                     }
@@ -524,69 +454,20 @@
                     alert('Ocorreu um erro ao cadastrar o produto.');
                 });
             });
+        });
+        const searchProdutos = document.getElementById('searchProdutos');
+        const produtoItems = document.querySelectorAll('.col-md-6.col-lg-4.mb-4');
 
-            // Preencher o modal de edição com os dados do produto
-            const editProductModal = document.getElementById('editProductModal');
-            editProductModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                const produtoId = button.getAttribute('data-produto-id');
-                const produtoCard = button.closest('.product-card');
-
-                document.getElementById('edit_produto_id').value = produtoId;
-                document.getElementById('edit_nome').value = produtoCard.querySelector('.product-name').textContent;
-                document.getElementById('edit_codigo').value = produtoCard.querySelector('.product-code').textContent.replace('Código: ', '');
-                document.getElementById('edit_preco').value = produtoCard.querySelector('.product-price').textContent.replace('R$ ', '').replace(',', '.');
-                document.getElementById('editPhotoPreview').src = produtoCard.querySelector('.product-photo').src;
-                document.getElementById('editPhotoPreview').classList.add('preview-active');
-
-                // Aqui você precisaria buscar a quantidade do produto do backend, pois ela não está visível no card
-                // Por enquanto, vamos deixar vazio ou com um valor padrão
-                document.getElementById('edit_quantidade').value = '';
-            });
-
-            // Envio do formulário de edição via AJAX
-            document.getElementById('editProductForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const produtoId = formData.get('produto_id');
-
-                fetch(`{% url 'editar_produto' 0 %}`.replace('0', produtoId), {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Produto atualizado com sucesso!');
-                        location.reload();
-                    } else {
-                        alert('Erro ao atualizar produto: ' + JSON.stringify(data.errors));
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Ocorreu um erro ao atualizar o produto.');
-                });
-            });
-
-            // Busca de produtos
-            const searchProdutos = document.getElementById('searchProdutos');
-            const produtoItems = document.querySelectorAll('.col-md-6.col-lg-4.mb-4');
-
-            searchProdutos.addEventListener('input', function() {
-                const searchQuery = this.value.toLowerCase();
-                produtoItems.forEach(item => {
-                    const produtoNome = item.querySelector('.product-name').textContent.toLowerCase();
-                    const produtoCodigo = item.querySelector('.product-code').textContent.toLowerCase();
-                    if (produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
+        searchProdutos.addEventListener('input', function() {
+            const searchQuery = this.value.toLowerCase();
+            produtoItems.forEach(item => {
+                const produtoNome = item.querySelector('.product-name').textContent.toLowerCase();
+                const produtoCodigo = item.querySelector('.product-code').textContent.toLowerCase();
+                if (produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
             });
         });
     </script>

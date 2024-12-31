@@ -191,17 +191,12 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
     }
-    .search-container {
-        display: flex;
-        align-items: center;
-    }
     .search-input {
-        border-top-right-radius: 50rem;
-        border-bottom-right-radius: 50rem;
         border-top-left-radius: 50rem;
         border-bottom-left-radius: 50rem;
-        border: 1px solid #9333ea;
-        background-color: #f8f9fa;
+        border: 2px solid #9333ea;
+        border-right: none;
+        background-color: #ffffff;
         transition: all 0.3s ease;
         padding-left: 1rem;
         height: 48px;
@@ -210,9 +205,10 @@
     .search-button {
         border-top-right-radius: 50rem;
         border-bottom-right-radius: 50rem;
-        background-color: #9333ea;
-        border-color: #9333ea;
-        color: #fff;
+        background-color: #ffffff;
+        border: 2px solid #9333ea;
+        border-left: none;
+        color: #9333ea;
         transition: all 0.3s ease;
         height: 48px;
         width: 48px;
@@ -220,15 +216,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-left: -48px;
     }
-    .search-button i {
-        font-size: 1.2rem;
+    .search-button:hover {
+        background-color: #9333ea;
+        color: #ffffff;
     }
     .input-group {
         border-radius: 50rem;
         overflow: hidden;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     .modal-header {
         background-color: #9333ea;
@@ -284,7 +279,7 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
-                    <a class="btn btn-highlight mb-2" href="#">
+                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
                     <a class="btn btn-highlight mb-2" href="#">
@@ -317,7 +312,7 @@
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <nav class="navbar navbar-expand-lg navbar-dark custom-navbar mb-4">
                     <div class="container-fluid">
-                        <a class="navbar-brand" href="#">Vendedoras</a>
+                        <a class="navbar-brand" href="#">Catálogo de Vendedoras</a>
                         <span class="navbar-text text-white d-flex align-items-center">
                             Olá, {{ user.username }}
                             {% if user.profile_picture %}
@@ -335,10 +330,12 @@
                     <h1 class="h2">Catálogo de Vendedoras</h1>
                     <div class="d-flex gap-3 align-items-center">
                         <div class="search-container d-flex flex-grow-1 me-3">
-                            <input type="text" id="searchVendedoras" class="form-control search-input" placeholder="Buscar vendedoras...">
-                            <button class="btn search-button" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
+                            <div class="input-group">
+                                <input type="text" id="searchVendedoras" class="form-control search-input" placeholder="Buscar vendedoras...">
+                                <button class="btn search-button" type="button">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
                         </div>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newSellerModal">
                             <i class="fas fa-user-plus me-2"></i>Nova Vendedora
@@ -496,8 +493,7 @@
             const searchQuery = this.value.toLowerCase();
             vendedoraItems.forEach(item => {
                 const vendedoraNome = item.querySelector('.seller-name').textContent.toLowerCase();
-                const vendedoraId = item.querySelector('.seller-id').textContent.toLowerCase();
-                if (vendedoraNome.includes(searchQuery) || vendedoraId.includes(searchQuery)) {
+                if (vendedoraNome.includes(searchQuery)) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';

@@ -1,0 +1,543 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Acerto de Vendedora - Angels ERP{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acerto de Vendedora - Angels ERP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            background-color: #f0f4f8;
+            font-family: 'Poppins', sans-serif;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #9333ea;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 1rem;
+        }
+        .sidebar .nav {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+        .sidebar .nav-item {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 85%;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            background-color: #7e22ce;
+        }
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            background-color: #6b21a8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar .btn-highlight {
+            background-color: #ffffff;
+            color: #9333ea;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 85%;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 1rem;
+            justify-content: center;
+            font-size: 1rem;
+            padding: 1rem;
+        }
+        .sidebar .btn-highlight:hover {
+            background-color: #f3e8ff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar .btn-exit {
+            background-color: #7e22ce;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar .btn-exit:hover {
+            background-color: #6b21a8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .sidebar .btn-exit i {
+            margin-right: 0.5rem;
+        }
+        .sidebar .nav-link i,
+        .sidebar .btn-highlight i {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        .sidebar .separator {
+            width: 85%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+            margin: 1rem 0;
+        }
+        main {
+            padding-top: 0 !important;
+        }
+        .custom-navbar {
+            background-color: #a855f7;
+            margin-left: -1.5rem;
+            margin-right: -1.5rem;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+        .navbar-text {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .custom-container {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
+        }
+        .btn {
+            border-radius: 10px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #9333ea;
+            border-color: #9333ea;
+            color: #ffffff;
+        }
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: #7e22ce;
+            border-color: #7e22ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
+        }
+        .btn-secondary {
+            background-color: #f3e8ff;
+            border-color: #f3e8ff;
+            color: #9333ea;
+        }
+        .btn-secondary:hover, .btn-secondary:focus {
+            background-color: #e9d5ff;
+            border-color: #e9d5ff;
+            color: #7e22ce;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .table th {
+            background-color: #f3e8ff;
+            color: #6b21a8;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .btn-sm {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        .btn-danger {
+            background-color: #fee2e2;
+            border-color: #fee2e2;
+            color: #dc2626;
+        }
+        .btn-danger:hover, .btn-danger:focus {
+            background-color: #fecaca;
+            border-color: #fecaca;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid vh-100">
+        <div class="row h-100">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse p-0">
+                <div class="position-sticky pt-3 h-100 d-flex flex-column align-items-center">
+                    <div class="text-center mb-4">
+                        <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
+                    </div>
+                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
+                        <i class="fas fa-plus-circle"></i> Novo Acerto
+                    </a>
+                    <a class="btn btn-highlight mb-2" href="#">
+                        <i class="fas fa-shopping-cart"></i> Nova Venda
+                    </a>
+                    <div class="separator"></div>
+                    <a class="nav-link mb-2" href="{% url 'dashboard' %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'estoque' %}">
+                        <i class="fas fa-box"></i> Estoque
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'catalogo' %}">
+                        <i class="fas fa-book"></i> Catálogo
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'vendedoras' %}">
+                        <i class="fas fa-users"></i> Vendedoras
+                    </a>
+                    <a class="nav-link mb-2" href="{% url 'clientes' %}">
+                        <i class="fas fa-user-friends"></i> Clientes
+                    </a>
+                    <div class="mt-auto mb-3">
+                        <a class="btn btn-exit" href="{% url 'login' %}">
+                            <i class="fas fa-sign-out-alt me-2"></i>
+                            <span>Sair</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <nav class="navbar navbar-expand-lg navbar-dark custom-navbar mb-4">
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">Acerto de Vendedora</a>
+                        <span class="navbar-text text-white d-flex align-items-center">
+                            Olá, {{ user.username }}
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Foto de perfil" class="rounded-circle ms-2" style="width: 30px; height: 30px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle ms-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                    <i class="fas fa-user text-white"></i>
+                                </div>
+                            {% endif %}
+                        </span>
+                    </div>
+                </nav>
+
+                <div class="custom-container">
+                    <form id="acertoForm" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label for="vendedora" class="form-label">Vendedora</label>
+                                <select class="form-select" id="vendedora" name="vendedora" required>
+                                    <option value="">Selecione uma vendedora</option>
+                                    {% for vendedora in vendedoras %}
+                                        <option value="{{ vendedora.id }}">{{ vendedora.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor, selecione uma vendedora.
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dataAcerto" class="form-label">Data do Acerto</label>
+                                <input type="date" class="form-control" id="dataAcerto" name="dataAcerto" required>
+                                <div class="invalid-feedback">
+                                    Por favor, selecione a data do acerto.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label for="endereco" class="form-label">Endereço</label>
+                                <input type="text" class="form-control" id="endereco" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="cidade" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidade" readonly>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="telefone" class="form-label">Telefone</label>
+                                <input type="text" class="form-control" id="telefone" readonly>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <button type="button" id="addItem" class="btn btn-secondary">
+                                <i class="fas fa-plus-circle me-2"></i>Adicionar Item
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Quantidade</th>
+                                        <th>Descrição</th>
+                                        <th>Preço Unitário</th>
+                                        <th>Total</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orderItems">
+                                    <!-- Items will be added here dynamically -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                                        <td class="text-end"><strong>R$ <span id="totalValue">0.00</span></strong></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        <div class="text-end mt-4">
+                            <button type="button" id="concluirAcerto" class="btn btn-primary">
+                                <i class="fas fa-check-circle me-2"></i>Concluir Acerto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            (function () {
+                'use strict'
+                var forms = document.querySelectorAll('.needs-validation')
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+
+            $('#addItem').click(function() {
+                const newRow = `
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control form-control-sm ref-input" placeholder="Código" required>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm quantity-input" value="1" min="1" required>
+                        </td>
+                        <td>
+                            <input type="text" class="form-control form-control-sm description-input" readonly>
+                        </td>
+                        <td>
+                            <input type="number" class="form-control form-control-sm price-input" step="0.01" readonly>
+                        </td>
+                        <td class="text-end total-cell">R$ 0.00</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-danger remove-item">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                $('#orderItems').append(newRow);
+            });
+
+            $(document).on('blur', '.ref-input', function() {
+                const row = $(this).closest('tr');
+                const codigo = $(this).val();
+                
+                if (codigo) {
+                    $.get('{% url "get_produto_info" %}', { codigo: codigo })
+                        .done(function(response) {
+                            if (response.success) {
+                                row.find('.description-input').val(response.nome);
+                                row.find('.price-input').val(response.preco);
+                                
+                                // Update total
+                                const quantity = parseInt(row.find('.quantity-input').val()) || 0;
+                                const price = parseFloat(response.preco) || 0;
+                                const total = quantity * price;
+                                row.find('.total-cell').text(`R$ ${total.toFixed(2)}`);
+                                updateTotal();
+                            } else {
+                                alert('Produto não encontrado');
+                                row.find('.description-input').val('');
+                                row.find('.price-input').val('');
+                                row.find('.total-cell').text('R$ 0.00');
+                            }
+                        })
+                        .fail(function() {
+                            alert('Erro ao buscar informações do produto');
+                        });
+                }
+            });
+
+            $(document).on('click', '.remove-item', function() {
+                $(this).closest('tr').remove();
+                updateTotal();
+            });
+
+            $('#concluirAcerto').click(function() {
+                if (!$('#acertoForm')[0].checkValidity()) {
+                    $('#acertoForm').addClass('was-validated');
+                    return;
+                }
+
+                if (!$('#vendedora').val()) {
+                    alert('Por favor, selecione uma vendedora');
+                    return;
+                }
+
+                if (!$('#dataAcerto').val()) {
+                    alert('Por favor, selecione a data do acerto');
+                    return;
+                }
+
+                const items = [];
+                let hasErrors = false;
+
+                $('#orderItems tr').each(function() {
+                    const row = $(this);
+                    const ref = row.find('.ref-input').val();
+                    const quantity = parseInt(row.find('.quantity-input').val());
+                    const price = parseFloat(row.find('.price-input').val());
+                    
+                    if (!ref || !quantity || !price) {
+                        hasErrors = true;
+                        return false;
+                    }
+
+                    items.push({
+                        ref: ref,
+                        quantity: quantity,
+                        price: price,
+                        total: (quantity * price).toFixed(2)
+                    });
+                });
+
+                if (hasErrors || items.length === 0) {
+                    alert('Por favor, preencha todos os campos corretamente');
+                    return;
+                }
+
+                const data = {
+                    vendedora_id: $('#vendedora').val(),
+                    cidade: $('#cidade').val(),
+                    data_acerto: $('#dataAcerto').val(),
+                    items: items,
+                    total: $('#totalValue').text()
+                };
+
+                $.ajax({
+                    url: '{% url "concluir_acerto" %}',
+                    method: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Acerto concluído com sucesso!');
+                            window.location.href = '{% url "vendedoras" %}';
+                        } else {
+                            alert('Erro ao concluir o acerto: ' + response.error);
+                        }
+                    },
+                    error: function() {
+                        alert('Erro ao processar a requisição.');
+                    }
+                });
+            });
+
+            $('#vendedora').change(function() {
+                const vendedoraId = $(this).val();
+                if (vendedoraId) {
+                    $.get('{% url "get_vendedora_info" %}', { vendedora_id: vendedoraId })
+                        .done(function(response) {
+                            $('#endereco').val(response.logradouro + ', ' + response.bairro);
+                            $('#cidade').val(response.cidade);
+                            $('#telefone').val(response.telefone1);
+                        })
+                        .fail(function() {
+                            alert('Erro ao buscar informações da vendedora');
+                        });
+                } else {
+                    $('#endereco').val('');
+                    $('#cidade').val('');
+                    $('#telefone').val('');
+                }
+            });
+
+            $(document).on('input', '.quantity-input', function() {
+                const row = $(this).closest('tr');
+                const quantity = parseFloat(row.find('.quantity-input').val()) || 0;
+                const price = parseFloat(row.find('.price-input').val()) || 0;
+                const total = quantity * price;
+                row.find('.total-cell').text(`R$ ${total.toFixed(2)}`);
+                updateTotal();
+            });
+
+            function updateTotal() {
+                let total = 0;
+                $('.total-cell').each(function() {
+                    total += parseFloat($(this).text().replace('R$ ', '')) || 0;
+                });
+                $('#totalValue').text(total.toFixed(2));
+            }
+        });
+    </script>
+</body>
+</html>
+{% endblock %}
+

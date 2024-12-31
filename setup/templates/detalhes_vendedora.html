@@ -513,45 +513,28 @@
                                             <th>Produto</th>
                                             <th>Quantidade</th>
                                             <th>Valor Unitário</th>
-                                            <th>Valor Atual</th>
                                             <th>Valor Total</th>
-                                            <th>Comissão</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        {% for item in estoque_vendedora %}
                                         <tr>
-                                            <td>001</td>
-                                            <td>Produto A</td>
-                                            <td>5</td>
-                                            <td>R$ 50,00</td>
-                                            <td>R$ 45,00</td>
-                                            <td>R$ 225,00</td>
-                                            <td>R$ 22,50</td>
+                                            <td>{{ item.produto.codigo }}</td>
+                                            <td>{{ item.produto.nome }}</td>
+                                            <td>{{ item.quantidade }}</td>
+                                            <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                            <td>R$ {{ item.quantidade|multiply:item.produto.preco|floatformat:2 }}</td>
                                         </tr>
+                                        {% empty %}
                                         <tr>
-                                            <td>002</td>
-                                            <td>Produto B</td>
-                                            <td>3</td>
-                                            <td>R$ 75,00</td>
-                                            <td>R$ 70,00</td>
-                                            <td>R$ 210,00</td>
-                                            <td>R$ 21,00</td>
+                                            <td colspan="5" class="text-center">Nenhum produto no estoque desta vendedora.</td>
                                         </tr>
-                                        <tr>
-                                            <td>003</td>
-                                            <td>Produto C</td>
-                                            <td>7</td>
-                                            <td>R$ 30,00</td>
-                                            <td>R$ 28,00</td>
-                                            <td>R$ 196,00</td>
-                                            <td>R$ 19,60</td>
-                                        </tr>
+                                        {% endfor %}
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="5" class="text-end">Totais:</th>
-                                            <th>R$ 631,00</th>
-                                            <th>R$ 63,10</th>
+                                            <th colspan="4" class="text-end">Total:</th>
+                                            <th>R$ {{ total_estoque|floatformat:2 }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

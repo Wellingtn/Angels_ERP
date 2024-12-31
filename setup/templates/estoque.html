@@ -198,28 +198,6 @@
             border-radius: 50rem;
             overflow: hidden;
         }
-        .stock-summary {
-            background-color: #f8f9fa;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        .stock-summary h5 {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-        .stock-summary p {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0;
-        }
-        .low-stock {
-            background-color: #fff3cd;
-        }
-        .category-filter {
-            width: 200px;
-        }
     </style>
 </head>
 <body>
@@ -230,7 +208,7 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
-                    <a class="btn btn-highlight mb-2" href="#">
+                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
                     <a class="btn btn-highlight mb-2" href="#">
@@ -277,37 +255,40 @@
                     </div>
                 </nav>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h2">Estoque de Produtos</h1>
-                </div>
-
                 <div class="row mb-4">
                     <div class="col-md-3">
-                        <div class="stock-summary">
-                            <h5>Total de Produtos</h5>
-                            <p>{{ produtos.count }}</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Valor Total do Estoque</h5>
+                                <p class="card-text">R$ {{ total_stock_value|floatformat:2 }}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="stock-summary">
-                            <h5>Valor Total do Estoque</h5>
-                            <p>R$ {{ valor_total_estoque|floatformat:2 }}</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Número de Produtos</h5>
+                                <p class="card-text">{{ num_products }}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="stock-summary">
-                            <h5>Produtos com Estoque Baixo</h5>
-                            <p>{{ produtos_estoque_baixo }}</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Preço Médio</h5>
+                                <p class="card-text">R$ {{ avg_price|floatformat:2 }}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="stock-summary">
-                            <h5>Última Atualização</h5>
-                            <p>{{ ultima_atualizacao|date:"d/m/Y H:i" }}</p>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Produto com Maior Quantidade</h5>
+                                <p class="card-text">{{ produto_maior_qtd.nome }} ({{ produto_maior_qtd.quantidade }})</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
                 <div class="d-flex gap-3 align-items-center mb-4">
                     <div class="search-container d-flex flex-grow-1 me-3">
                         <input type="text" id="searchEstoque" class="form-control search-input" placeholder="Buscar produtos...">
@@ -315,12 +296,6 @@
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
-                    <select id="categoryFilter" class="form-select category-filter">
-                        <option value="">Todas as Categorias</option>
-                        {% for categoria in categorias %}
-                            <option value="{{ categoria }}">{{ categoria }}</option>
-                        {% endfor %}
-                    </select>
                 </div>
 
                 <div class="table-responsive">
@@ -330,17 +305,16 @@
                                 <th>Imagem</th>
                                 <th>Código</th>
                                 <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Preço Unitário</th>
-                                <th>Quantidade</th>
+                                <th>Preço</th>
+                                <th>Valor Unitário</th>
                                 <th>Valor Total</th>
-                                <th>Status</th>
+                                <th>Quantidade</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for produto in produtos %}
-                            <tr data-produto-id="{{ produto.id }}" data-categoria="{{ produto.categoria }}" class="{% if produto.quantidade < produto.estoque_minimo %}low-stock{% endif %}">
+                            <tr data-produto-id="{{ produto.id }}">
                                 <td>
                                     {% if produto.foto %}
                                         <img src="{{ produto.foto.url }}" alt="{{ produto.nome }}" class="product-image">
@@ -350,20 +324,13 @@
                                         </div>
                                     {% endif %}
                                 </td>
-                                <td>{{ produto.codigo }}</td>{{ produto.codigo }}</td>
+                                <td>{{ produto.codigo }}</td>
                                 <td>{{ produto.nome }}</td>
-                                <td>{{ produto.categoria }}</td>
                                 <td class="preco-unitario">R$ {{ produto.preco|floatformat:2 }}</td>
-                                <td>
-                                    <input type="number" class="form-control quantity-input" value="{{ produto.quantidade }}" min="0" data-produto-id="{{ produto.id }}">
-                                </td>
+                                <td class="preco-unitario">R$ {{ produto.preco|floatformat:2 }}</td>
                                 <td class="valor-total">R$ {{ produto.valor_total|floatformat:2 }}</td>
                                 <td>
-                                    {% if produto.quantidade < produto.estoque_minimo %}
-                                        <span class="badge bg-warning">Estoque Baixo</span>
-                                    {% else %}
-                                        <span class="badge bg-success">OK</span>
-                                    {% endif %}
+                                    <input type="number" class="form-control quantity-input" value="{{ produto.quantidade }}" min="0" data-produto-id="{{ produto.id }}">
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-primary update-quantity" data-produto-id="{{ produto.id }}">Atualizar</button>
@@ -371,7 +338,7 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="9" class="text-center">Nenhum produto cadastrado.</td>
+                                <td colspan="8" class="text-center">Nenhum produto cadastrado.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -436,31 +403,20 @@
     </script>
     <script>
         const searchEstoque = document.getElementById('searchEstoque');
-        const categoryFilter = document.getElementById('categoryFilter');
         const produtoItems = document.querySelectorAll('tbody tr');
 
-        function filterProducts() {
-            const searchQuery = searchEstoque.value.toLowerCase();
-            const selectedCategory = categoryFilter.value.toLowerCase();
-
+        searchEstoque.addEventListener('input', function() {
+            const searchQuery = this.value.toLowerCase();
             produtoItems.forEach(item => {
                 const produtoNome = item.querySelector('td:nth-child(3)').textContent.toLowerCase();
                 const produtoCodigo = item.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const produtoCategoria = item.getAttribute('data-categoria').toLowerCase();
-
-                const matchesSearch = produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery);
-                const matchesCategory = selectedCategory === '' || produtoCategoria === selectedCategory;
-
-                if (matchesSearch && matchesCategory) {
+                if (produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery)) {
                     item.style.display = '';
                 } else {
                     item.style.display = 'none';
                 }
             });
-        }
-
-        searchEstoque.addEventListener('input', filterProducts);
-        categoryFilter.addEventListener('change', filterProducts);
+        });
     </script>
 </body>
 </html>
