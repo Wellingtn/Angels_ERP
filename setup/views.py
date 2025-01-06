@@ -14,6 +14,7 @@ import os
 from django.conf import settings
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.db.models import Sum, Avg, Max, F
 
 def user_login(request):
     if request.method == 'POST':
@@ -50,9 +51,47 @@ def logout_view(request):
 @login_required
 def estoque(request):
     produtos = Produto.objects.all()
+    
+    valor_total_estoque = produtos.aggregate(
+        total=Sum(F('preco') * F('quantidade'))
+    )['total'] or 0
+
+    numero_produtos = produtos.count()
+    preco_medio = produtos.aggregate(avg_price=Avg('preco'))['avg_price'] or 0
+    produto_maior_qtd = produtos.order_by('-quantidade').first()
+
     for produto in produtos:
         produto.valor_total = produto.preco * produto.quantidade
-    return render(request, 'estoque.html', {'produtos': produtos})
+
+    context = {
+        'produtos': produtos,
+        'valor_total_estoque': valor_total_estoque,
+        'numero_produtos': numero_produtos,
+        'preco_medio': preco_medio,
+        'produto_maior_qtd': produto_maior_qtd,
+    }
+
+    return render(request, 'estoque.html', context)
+
+@login_required
+def atualizar_quantidade_produto(request):
+    if request.method == 'POST':
+        produto_id = request.POST.get('produto_id')
+        nova_quantidade = request.POST.get('quantidade')
+        
+        try:
+            produto = Produto.objects.get(id=produto_id)
+            produto.quantidade = int(nova_quantidade)
+            produto.save()
+            return JsonResponse({'success': True, 'message': 'Quantidade atualizada com sucesso.'})
+        except Produto.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
+        except ValueError:
+            return JsonResponse({'success': False, 'message': 'Quantidade inválida.'})
+    
+    return JsonResponse({'success': False, 'message': 'Método não permitido.'})
+
+
 
 @login_required
 def catalogo(request):
@@ -211,26 +250,6 @@ def cadastro_produto(request):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
-@login_required
-def atualizar_quantidade_produto(request):
-    if request.method == 'POST':
-        produto_id = request.POST.get('produto_id')
-        quantidade = request.POST.get('quantidade')
-        try:
-            produto = Produto.objects.get(id=produto_id)
-            produto.quantidade = int(quantidade)
-            produto.valor_total = produto.preco * produto.quantidade
-            produto.save()
-            return JsonResponse({
-                'success': True,
-                'valor_total': produto.valor_total,
-                'message': 'Quantidade e valor total atualizados com sucesso!'
-            })
-        except Produto.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Produto não encontrado'})
-        except ValueError:
-            return JsonResponse({'success': False, 'message': 'Quantidade inválida'})
-    return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
 @login_required
 def clientes(request):

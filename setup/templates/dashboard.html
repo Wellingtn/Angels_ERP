@@ -5,7 +5,7 @@
 
 {% block content %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -179,6 +179,27 @@
             font-size: 1rem;
             font-weight: 500;
         }
+        .top-sellers-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .top-sellers-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .top-sellers-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .top-sellers-list li:last-child {
+            border-bottom: none;
+        }
     </style>
 </head>
 <body>
@@ -196,7 +217,7 @@
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
-                    <a class="nav-link mb-2" href="{% url 'dashboard' %}">
+                    <a class="nav-link mb-2 active" href="{% url 'dashboard' %}">
                         <i class="fas fa-tachometer-alt"></i> Dashboard
                     </a>
                     <a class="nav-link mb-2" href="{% url 'estoque' %}">
@@ -239,52 +260,77 @@
                 <div class="row g-4 mb-4">
                     <div class="col-xl-3 col-md-6">
                         <div class="info-card">
-                            <h5 class="info-card-title">Novos Clientes</h5>
-                            <p class="info-card-value">8,282</p>
+                            <h5 class="info-card-title">Vendas do Mês</h5>
+                            <p class="info-card-value">R$ 85.230</p>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> 3.48%
+                                <i class="fas fa-arrow-up"></i> 12,5% em relação ao mês anterior
                             </small>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="info-card">
-                            <h5 class="info-card-title">Total Vendas</h5>
-                            <p class="info-card-value">$200,521</p>
-                            <small class="text-danger">
-                                <i class="fas fa-arrow-down"></i> 1.10%
+                            <h5 class="info-card-title">Ticket Médio</h5>
+                            <p class="info-card-value">R$ 180,50</p>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up"></i> 3,2% em relação ao mês anterior
                             </small>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="info-card">
-                            <h5 class="info-card-title">Produtos Disponíveis</h5>
-                            <p class="info-card-value">215,542</p>
+                            <h5 class="info-card-title">Novas Vendedoras</h5>
+                            <p class="info-card-value">18</p>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> 2.95%
+                                <i class="fas fa-arrow-up"></i> 5 a mais que o mês anterior
                             </small>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">
                         <div class="info-card">
-                            <h5 class="info-card-title">Receita Total</h5>
-                            <p class="info-card-value">$20,510</p>
+                            <h5 class="info-card-title">Taxa de Conversão</h5>
+                            <p class="info-card-value">32,5%</p>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up"></i> 4.75%
+                                <i class="fas fa-arrow-up"></i> 2,1% em relação ao mês anterior
                             </small>
                         </div>
                     </div>
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-md-6">
+                    <div class="col-md-8">
                         <div class="chart-card">
-                            <h5 class="info-card-title mb-3">Vendas Mensais</h5>
+                            <h5 class="info-card-title mb-3">Vendas por Categoria (Últimos 6 meses)</h5>
                             <div class="chart-container">
                                 <canvas id="salesChart"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="top-sellers-card">
+                            <h5 class="info-card-title mb-3">Top 5 Vendedoras do Mês</h5>
+                            <ul class="top-sellers-list">
+                                <li>
+                                    <span>1. Maria Silva</span>
+                                    <span>R$ 12.450</span>
+                                </li>
+                                <li>
+                                    <span>2. Ana Santos</span>
+                                    <span>R$ 10.820</span>
+                                </li>
+                                <li>
+                                    <span>3. Juliana Oliveira</span>
+                                    <span>R$ 9.730</span>
+                                </li>
+                                <li>
+                                    <span>4. Carla Rodrigues</span>
+                                    <span>R$ 8.950</span>
+                                </li>
+                                <li>
+                                    <span>5. Patrícia Ferreira</span>
+                                    <span>R$ 7.680</span>
+                                </li>
+                            </ul>
+                        </div>
                         <div class="chart-card">
                             <h5 class="info-card-title mb-3">Produtos Mais Vendidos</h5>
                             <div class="chart-container">
@@ -303,13 +349,29 @@
             type: 'line',
             data: {
                 labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                datasets: [{
-                    label: 'Vendas',
-                    data: [12000, 19000, 15000, 25000, 22000, 30000],
-                    borderColor: 'rgb(102, 126, 234)',
-                    tension: 0.1,
-                    fill: false
-                }]
+                datasets: [
+                    {
+                        label: 'Lingerie',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'Pijamas',
+                        data: [8000, 12000, 10000, 17000, 15000, 20000],
+                        borderColor: 'rgb(54, 162, 235)',
+                        tension: 0.1,
+                        fill: false
+                    },
+                    {
+                        label: 'Moda Praia',
+                        data: [5000, 8000, 7000, 12000, 10000, 15000],
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }
+                ]
             },
             options: {
                 responsive: true,
@@ -324,12 +386,13 @@
                             }
                         }
                     }
-                },scales: {
+                },
+                scales: {
                     y: {
                         beginAtZero: true,
                         ticks: {
                             callback: function(value, index, values) {
-                                return '$' + value.toLocaleString();
+                                return 'R$ ' + value.toLocaleString();
                             },
                             font: {
                                 size: 12
@@ -357,12 +420,11 @@
 
         var productsCtx = document.getElementById('productsChart').getContext('2d');
         new Chart(productsCtx, {
-            type: 'bar',
+            type: 'doughnut',
             data: {
-                labels: ['Sutiã', 'Calcinha', 'Body', 'Pijama', 'Lingerie'],
+                labels: ['Sutiãs', 'Calcinhas', 'Bodies', 'Pijamas', 'Biquínis'],
                 datasets: [{
-                    label: 'Vendas',
-                    data: [12000, 19000, 3000, 5000, 2000],
+                    data: [30, 25, 15, 20, 10],
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.7)',
                         'rgba(54, 162, 235, 0.7)',
@@ -386,30 +448,10 @@
                 plugins: {
                     legend: {
                         display: true,
-                        position: 'top',
+                        position: 'right',
                         labels: {
                             font: {
                                 size: 14
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value, index, values) {
-                                return '$' + value.toLocaleString();
-                            },
-                            font: {
-                                size: 12
-                            }
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            font: {
-                                size: 12
                             }
                         }
                     }
