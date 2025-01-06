@@ -151,15 +151,17 @@
         height: 120px;
         border-radius: 50%;
         margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: auto;
+        margin-right: auto;
     }
     .seller-photo {
         object-fit: cover;
     }
     .seller-photo-placeholder {
         background-color: #e2e8f0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
     .seller-photo-placeholder i {
         font-size: 3rem;
@@ -181,7 +183,7 @@
         color: #ffffff;
         font-weight: 600;
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem; /* Updated border-radius */
+        border-radius: 50rem;
         transition: all 0.3s ease;
     }
     .btn-primary:hover {
@@ -191,12 +193,17 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
     }
+    .search-container {
+        display: flex;
+        align-items: center;
+    }
     .search-input {
+        border-top-right-radius: 50rem;
+        border-bottom-right-radius: 50rem;
         border-top-left-radius: 50rem;
         border-bottom-left-radius: 50rem;
-        border: 2px solid #9333ea;
-        border-right: none;
-        background-color: #ffffff;
+        border: 1px solid #9333ea;
+        background-color: #f8f9fa;
         transition: all 0.3s ease;
         padding-left: 1rem;
         height: 48px;
@@ -205,10 +212,9 @@
     .search-button {
         border-top-right-radius: 50rem;
         border-bottom-right-radius: 50rem;
-        background-color: #ffffff;
-        border: 2px solid #9333ea;
-        border-left: none;
-        color: #9333ea;
+        background-color: #9333ea;
+        border-color: #9333ea;
+        color: #fff;
         transition: all 0.3s ease;
         height: 48px;
         width: 48px;
@@ -216,14 +222,15 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        margin-left: -48px;
     }
-    .search-button:hover {
-        background-color: #9333ea;
-        color: #ffffff;
+    .search-button i {
+        font-size: 1.2rem;
     }
     .input-group {
         border-radius: 50rem;
         overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     .modal-header {
         background-color: #9333ea;
@@ -244,10 +251,13 @@
         transition: all 0.3s ease;
         border: 2px solid #e9d5ff;
         margin-bottom: 1rem;
+        position: relative;
+        left: 50%;
+        top: 30px; /* Updated top position */
+        transform: translateX(-50%);
     }
     .photo-upload-circle i {
-        color: #9333ea;
-        font-size: 3rem;
+        font-size: 2.5rem;
     }
     .photo-preview {
         width: 120px;
@@ -268,7 +278,13 @@
         padding: 0.75rem 1.25rem;
         border: 1px solid #e2e8f0;
     }
-
+    .photo-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: 70px; /* Increased margin-top */
+        text-align: center;
+        width: 100%;
+    }
 </style>
 </head>
 <body>
@@ -330,12 +346,10 @@
                     <h1 class="h2">Catálogo de Vendedoras</h1>
                     <div class="d-flex gap-3 align-items-center">
                         <div class="search-container d-flex flex-grow-1 me-3">
-                            <div class="input-group">
-                                <input type="text" id="searchVendedoras" class="form-control search-input" placeholder="Buscar vendedoras...">
-                                <button class="btn search-button" type="button">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
+                            <input type="text" id="searchVendedoras" class="form-control search-input" placeholder="Buscar vendedoras...">
+                            <button class="btn search-button" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
                         </div>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newSellerModal">
                             <i class="fas fa-user-plus me-2"></i>Nova Vendedora
@@ -349,9 +363,9 @@
                         <div class="seller-card">
                             <div class="text-center">
                                 {% if vendedora.foto %}
-                                    <img src="{{ vendedora.foto.url }}" alt="Foto de {{ vendedora.nome }}" class="seller-photo mb-3">
+                                    <img src="{{ vendedora.foto.url }}" alt="Foto de {{ vendedora.nome }}" class="seller-photo">
                                 {% else %}
-                                    <div class="seller-photo-placeholder mb-3">
+                                    <div class="seller-photo-placeholder">
                                         <i class="fas fa-user"></i>
                                     </div>
                                 {% endif %}
@@ -383,12 +397,13 @@
                     <form method="post" enctype="multipart/form-data" id="newSellerForm">
                         {% csrf_token %}
                         <div class="row">
-                            <div class="col-md-4 text-center">
+                            <div class="col-md-4 text-center position-relative">
                                 <img id="photoPreview" class="photo-preview mb-3" alt="Foto da Vendedora">
-                                <label for="id_foto" class="photo-upload-circle mb-3">
+                                <label for="id_foto" class="photo-upload-circle">
                                     <i class="fas fa-camera"></i>
                                 </label>
                                 <input type="file" name="foto" id="id_foto" class="d-none" accept="image/*">
+                                <p class="photo-label">Foto da vendedora</p>
                             </div>
                             <div class="col-md-8">
                                 <div class="mb-3">
