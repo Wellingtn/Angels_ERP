@@ -2,22 +2,24 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpResponse, FileResponse
-from .forms import VendedoraForm, ProdutoForm, CustomUserCreationForm, ClienteForm
-from .models import Vendedora, Produto, Cliente, EstoqueVendedora, Acerto, ItemAcerto, Compra
+from .forms import VendedoraForm, ProdutoForm, CustomUserCreationForm, ClienteForm, NovaVendaForm
+from .models import Vendedora, Produto, Cliente, EstoqueVendedora, Acerto, ItemAcerto, Compra, ItemCompra
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.units import inch
 from io import BytesIO
-import os
 from django.conf import settings
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.db.models import Sum, Avg, Max, F
 from django.db import transaction
-import json
 from decimal import Decimal
+from django.views.decorators.http import require_http_methods
+import os
+import json
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -469,3 +471,96 @@ def historico_compras_cliente(request, cliente_id):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+
+#====================nova venda==========================
+@login_required
+@require_http_methods(["GET", "POST"])
+def nova_venda(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            cliente_id = data.get('cliente_id')
+            data_venda = data.get('data_venda')
+            produtos = data.get('produtos', [])
+            valor_total = data.get('valor_total')
+
+            print(f"Dados recebidos: {data}")  # Log dos dados recebidos
+
+            with transaction.atomic():
+                cliente = Cliente.objects.get(id=cliente_id)
+                compra = Compra.objects.create(
+                    cliente=cliente,
+                    data=data_venda,
+                    valor_total=valor_total
+                )
+
+                for produto_data in produtos:
+                    produto = Produto.objects.get(codigo=produto_data['codigo'])
+                    ItemCompra.objects.create(
+                        compra=compra,
+                        produto=produto,
+                        quantidade=produto_data['quantidade'],
+                        preco_unitario=produto_data['preco_unitario']
+                    )
+                    # Atualizar o estoque
+                    produto.quantidade -= produto_data['quantidade']
+                    produto.save()
+
+            return JsonResponse({'success': True, 'message': 'Venda concluída com sucesso!'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Dados inválidos'}, status=400)
+        except Cliente.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Cliente não encontrado'}, status=404)
+        except Produto.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Produto não encontrado'}, status=404)
+        except Exception as e:
+            print(f"Erro ao processar venda: {str(e)}")  # Log do erro
+            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+    else:
+        clientes = Cliente.objects.all()
+        produtos = Produto.objects.all()
+        context = {
+            'clientes': clientes,
+            'produtos': produtos,
+        }
+        return render(request, 'nova_venda.html', context)
+
+
+def get_produto_info(request, codigo):
+    try:
+        produto = Produto.objects.get(codigo=codigo)
+        return JsonResponse({
+            'success': True,
+            'nome': produto.nome,
+            'preco': float(produto.preco),
+            'quantidade_disponivel': produto.quantidade
+        })
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Produto não encontrado'})
+
+
+def historico_compras_cliente(request, cliente_id):
+    try:
+        cliente = Cliente.objects.get(id=cliente_id)
+        compras = cliente.historico_compras()
+        
+        data = []
+        for compra in compras:
+            data.append({
+                'id': compra.id,
+                'data': compra.data.strftime('%d/%m/%Y'),
+                'valor': float(compra.valor_total),
+                'itens': [
+                    {
+                        'produto': item.produto.nome,
+                        'quantidade': item.quantidade,
+                        'preco_unitario': float(item.preco_unitario)
+                    } for item in compra.itens.all()
+                ]
+            })
+        
+        return JsonResponse({'success': True, 'compras': data})
+    except Cliente.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Cliente não encontrado'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)

@@ -481,29 +481,40 @@
             document.getElementById('clienteStatus').textContent = status === 'active' ? 'Ativo' : 'Inativo';
             document.getElementById('clienteId').value = id;
 
-            // Buscar histórico de compras do banco de dados
+            // Buscar histórico de compras
             fetch(`/api/cliente/${id}/historico-compras/`)
                 .then(response => response.json())
                 .then(data => {
-                    const historicoList = document.getElementById('historicoCompras');
-                    historicoList.innerHTML = '';
-                    if (data.length > 0) {
-                        data.forEach(compra => {
-                            const li = document.createElement('li');
-                            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                            li.innerHTML = `
-                                <span>${new Date(compra.data).toLocaleDateString()}</span>
-                                <span class="badge bg-primary rounded-pill">R$ ${compra.valor.toFixed(2)}</span>
-                            `;
-                            historicoList.appendChild(li);
-                        });
+                    if (data.success) {
+                        const historicoList = document.getElementById('historicoCompras');
+                        historicoList.innerHTML = '';
+                        if (data.compras.length > 0) {
+                            data.compras.forEach(compra => {
+                                const li = document.createElement('li');
+                                li.className = 'list-group-item';
+                                li.innerHTML = `
+                                    <strong>Data:</strong> ${compra.data}<br>
+                                    <strong>Valor Total:</strong> R$ ${compra.valor.toFixed(2)}<br>
+                                    <strong>Itens:</strong><br>
+                                    <ul>
+                                        ${compra.itens.map(item => `
+                                            <li>${item.produto} - ${item.quantidade} x R$ ${item.preco_unitario.toFixed(2)}</li>
+                                        `).join('')}
+                                    </ul>
+                                `;
+                                historicoList.appendChild(li);
+                            });
+                        } else {
+                            historicoList.innerHTML = '<li class="list-group-item">Nenhuma compra registrada para este cliente.</li>';
+                        }
                     } else {
-                        historicoList.innerHTML = '<li class="list-group-item text-center">Nenhuma compra registrada para este cliente.</li>';
+                        console.error('Erro ao buscar histórico de compras:', data.error);
+                        document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item">Erro ao carregar o histórico de compras.</li>';
                     }
                 })
                 .catch(error => {
                     console.error('Erro ao buscar histórico de compras:', error);
-                    document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item text-center">Erro ao carregar o histórico de compras.</li>';
+                    document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item">Erro ao carregar o histórico de compras.</li>';
                 });
 
             var modal = new bootstrap.Modal(document.getElementById('clienteModal'));
