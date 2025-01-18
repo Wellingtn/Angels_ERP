@@ -25,4 +25,6 @@ urlpatterns = [
     path('get_vendedora_info/', views.get_vendedora_info, name='get_vendedora_info'),
     path('concluir_acerto/', views.concluir_acerto, name='concluir_acerto'),
     path('get_produto_info/', views.get_produto_info, name='get_produto_info'),
+    path('api/cliente/<int:cliente_id>/historico-compras/', views.historico_compras_cliente, name='historico_compras_cliente'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse, HttpResponse, FileResponse
 from .forms import VendedoraForm, ProdutoForm, CustomUserCreationForm, ClienteForm
-from .models import Vendedora, Produto, Cliente
+from .models import Vendedora, Produto, Cliente, EstoqueVendedora, Acerto, ItemAcerto, Compra
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -15,6 +15,9 @@ from django.conf import settings
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from django.db.models import Sum, Avg, Max, F
+from django.db import transaction
+import json
+from decimal import Decimal
 
 def user_login(request):
     if request.method == 'POST':
@@ -90,8 +93,6 @@ def atualizar_quantidade_produto(request):
             return JsonResponse({'success': False, 'message': 'Quantidade inválida.'})
     
     return JsonResponse({'success': False, 'message': 'Método não permitido.'})
-
-
 
 @login_required
 def catalogo(request):
@@ -250,7 +251,6 @@ def cadastro_produto(request):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'message': 'Método não permitido'})
 
-
 @login_required
 def clientes(request):
     clientes = Cliente.objects.all()
@@ -330,20 +330,6 @@ def novo_acerto(request):
     return render(request, 'novo_acerto.html', {'vendedoras': vendedoras})
 
 @login_required
-def editar_produto(request, produto_id):
-    produto = get_object_or_404(Produto, id=produto_id)
-    if request.method == 'POST':
-        form = ProdutoForm(request.POST, request.FILES, instance=produto)
-        if form.is_valid():
-            form.save()
-            return JsonResponse({'success': True, 'message': 'Produto atualizado com sucesso!'})
-        else:
-            return JsonResponse({'success': False, 'errors': form.errors})
-    else:
-        form = ProdutoForm(instance=produto)
-    return render(request, 'editar_produto.html', {'form': form, 'produto': produto})
-
-@login_required
 def acerto_vendedora(request, vendedora_id=None):
     vendedoras = Vendedora.objects.all()
     context = {'vendedoras': vendedoras}
@@ -358,17 +344,11 @@ def acerto_vendedora(request, vendedora_id=None):
     
     return render(request, 'acerto_vendedora.html', context)
 
-
 @login_required
 def get_vendedora_info(request):
     vendedora_id = request.GET.get('vendedora_id')
     vendedora = get_object_or_404(Vendedora, id=vendedora_id)
-    return JsonResponse({
-        'logradouro': vendedora.logradouro,
-        'bairro': vendedora.bairro,
-        'cidade': vendedora.cidade,
-        'telefone1': vendedora.telefone1
-    })
+    estoque_vendedora = EstoqueVendedora.objects.filter(vendedora=vendedora).select_related('produto')
 
     produtos = [
         {
@@ -392,6 +372,10 @@ def get_vendedora_info(request):
     return JsonResponse({
         'id': vendedora.id,
         'nome': vendedora.nome,
+        'logradouro': vendedora.logradouro,
+        'bairro': vendedora.bairro,
+        'cidade': vendedora.cidade,
+        'telefone1': vendedora.telefone1,
         'produtos': produtos,
         'produtos_disponiveis': produtos_disponiveis
     })
@@ -444,8 +428,6 @@ def concluir_acerto(request):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
-
-
 @login_required
 def get_produto_info(request):
     codigo = request.GET.get('codigo')
@@ -463,3 +445,27 @@ def get_produto_info(request):
             'success': False,
             'error': 'Produto não encontrado'
         })
+
+from django.http import JsonResponse
+from .models import Cliente, Compra  # Certifique-se de importar o modelo Compra
+
+@login_required
+def historico_compras_cliente(request, cliente_id):
+    try:
+        cliente = Cliente.objects.get(id=cliente_id)
+        compras = Compra.objects.filter(cliente=cliente).order_by('-data')
+        
+        historico = [
+            {
+                'data': compra.data.strftime('%Y-%m-%d'),
+                'valor': float(compra.valor)
+            }
+            for compra in compras
+        ]
+        
+        return JsonResponse(historico, safe=False)
+    except Cliente.DoesNotExist:
+        return JsonResponse({'error': 'Cliente não encontrado'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+

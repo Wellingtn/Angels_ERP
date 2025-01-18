@@ -134,69 +134,10 @@
             font-size: 1rem;
             font-weight: 500;
         }
-        .btn-primary {
-            background-color: #9333ea;
-            border-color: #9333ea;
-            color: #ffffff;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #7e22ce;
-            border-color: #7e22ce;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
-        }
-        .client-card {
-            background-color: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-        .client-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-        .client-info {
-            flex-grow: 1;
-        }
-        .client-actions {
-            margin-top: auto;
-        }
-        .client-name {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        .client-id {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-bottom: 1rem;
-        }
-        .client-detail {
-            margin-bottom: 0.5rem;
-        }
-        .client-detail strong {
-            font-weight: 600;
-            margin-right: 0.25rem;
-        }
-        .modal-header {
-            background-color: #9333ea;
-            color: white;
-        }
-        .modal-title {
-            font-weight: 600;
-        }
         .search-container {
             display: flex;
             align-items: center;
+            width: 300px;
         }
         .search-input {
             border-top-right-radius: 50rem;
@@ -229,12 +170,114 @@
             font-size: 1.2rem;
         }
         .btn-primary {
-            border-radius: 50rem;
+            background-color: #9333ea;
+            border-color: #9333ea;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
-        .input-group {
-            border-radius: 50rem;
+        .btn-primary:hover {
+            background-color: #7e22ce;
+            border-color: #7e22ce;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
+        }
+        .cliente-card {
+            border: none;
+            border-radius: 1rem;
             overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+        .cliente-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .cliente-details {
+            padding: 2rem; /* Aumentado de 1.5rem para 2rem */
+        }
+        .cliente-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+        }
+        .cliente-info {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+        }
+        .cliente-icon {
+            font-size: 4rem; /* Aumentado de 3rem para 4rem */
+            color: #9333ea;
+            margin-bottom: 1.5rem;
+        }
+        .btn-view-details {
+            background-color: #9333ea;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        .btn-view-details:hover {
+            background-color: #7e22ce;
+            transform: translateY(-2px);
+        }
+        .modal-content {
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .modal-header {
+            background-color: #9333ea;
+            color: #ffffff;
+            border-bottom: none;
+        }
+        .modal-title {
+            font-weight: 600;
+        }
+        .modal-body {
+            padding: 2rem;
+        }
+        .modal-footer {
+            border-top: none;
+            padding: 1rem 2rem 2rem;
+        }
+        .btn-add-cliente {
+            width: auto;
+            padding: 0.5rem 1rem;
+        }
+        .cliente-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+        }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem; /* Aumentado de 1rem para 2rem */
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-active {
+            background-color: #48bb78;
+            color: #ffffff;
+        }
+        .status-inactive {
+            background-color: #f56565;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -285,8 +328,8 @@
                             {% if user.profile_picture %}
                                 <img src="{{ user.profile_picture.url }}" alt="Foto de perfil" class="rounded-circle ms-2" style="width: 30px; height: 30px; object-fit: cover;">
                             {% else %}
-                                <div class="rounded-circle ms-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                                    <i class="fas fa-user text-white"></i>
+                                <div class="rounded-circle ms-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="fas fa-user text-white" style="font-size: 1.5rem;"></i>
                                 </div>
                             {% endif %}
                         </span>
@@ -294,40 +337,37 @@
                 </nav>
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="h2">Lista de Clientes</h1>
-                    <div class="d-flex gap-3 align-items-center">
-                        <div class="search-container d-flex flex-grow-1 me-3">
-                            <input type="text" id="searchClientes" class="form-control search-input" placeholder="Buscar clientes...">
-                            <button class="btn search-button" type="button">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newClientModal">
-                            <i class="fas fa-user-plus me-2"></i>Novo Cliente
+                    <div class="search-container d-flex">
+                        <input type="text" id="searchClientes" class="form-control search-input" placeholder="Buscar clientes...">
+                        <button class="btn search-button" type="button">
+                            <i class="fas fa-search"></i>
                         </button>
                     </div>
+                    <button class="btn btn-primary btn-add-cliente" data-bs-toggle="modal" data-bs-target="#addClienteModal">
+                        <i class="fas fa-plus me-2"></i>Novo Cliente
+                    </button>
                 </div>
 
-                <div class="row g-4" id="clientesList">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4" id="clienteGrid">
                     {% for cliente in clientes %}
-                    <div class="col-md-6 col-lg-4 cliente-item" data-cliente-id="{{ cliente.id }}">
-                        <div class="client-card">
-                            <div class="client-info">
-                                <h5 class="client-name">{{ cliente.nome }}</h5>
-                                <p class="client-id">ID: {{ cliente.id }}</p>
-                                <p class="client-detail"><strong>Logradouro:</strong> {{ cliente.logradouro }}</p>
-                                <p class="client-detail"><strong>Bairro:</strong> {{ cliente.bairro }}</p>
-                                <p class="client-detail"><strong>Cidade:</strong> {{ cliente.cidade }}</p>
-                                <p class="client-detail"><strong>UF:</strong> {{ cliente.uf }}</p>
-                                <p class="client-detail"><strong>Telefone:</strong> {{ cliente.telefone }}</p>
-                            </div>
-                            <div class="client-actions">
-                                <button class="btn btn-sm btn-outline-primary me-2 edit-client" data-cliente-id="{{ cliente.id }}" data-bs-toggle="modal" data-bs-target="#editClientModal">
-                                    <i class="fas fa-edit me-1"></i>Editar
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger delete-client" data-cliente-id="{{ cliente.id }}">
-                                    <i class="fas fa-trash-alt me-1"></i>Excluir
-                                </button>
+                    <div class="col">
+                        <div class="card cliente-card h-100">
+                            <div class="card-body cliente-details">
+                                <div class="text-center mb-4">  <!-- Update: Added mb-4 class -->
+                                    <i class="fas fa-user-circle cliente-icon"></i>
+                                </div>
+                                <h5 class="card-title cliente-name text-center">{{ cliente.nome }}</h5>
+                                <p class="card-text cliente-info text-center"><i class="fas fa-map-marker-alt me-2"></i>{{ cliente.cidade }} - {{ cliente.uf }}</p>
+                                <p class="card-text cliente-info text-center"><i class="fas fa-phone me-2"></i>{{ cliente.telefone }}</p>
+                                <p class="card-text cliente-info text-center"><i class="fas fa-home me-2"></i>{{ cliente.bairro }}</p>
+                                <span class="status-badge {% if cliente.status == 'active' %}status-active{% else %}status-inactive{% endif %}">
+                                    {% if cliente.status == 'active' %}Ativo{% else %}Inativo{% endif %}
+                                </span>
+                                <div class="cliente-actions">
+                                    <button class="btn btn-sm btn-primary btn-action" onclick="openClienteModal('{{ cliente.id }}', '{{ cliente.nome }}', '{{ cliente.cidade }}', '{{ cliente.uf }}', '{{ cliente.telefone }}', '{{ cliente.bairro }}', '{{ cliente.logradouro }}', '{{ cliente.status }}')">
+                                        <i class="fas fa-eye"></i> Detalhes
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -341,92 +381,89 @@
         </div>
     </div>
 
-    <!-- Modal de Cadastro<!-- Modal de Cadastro de Novo Cliente -->
-    <div class="modal fade" id="newClientModal" tabindex="-1" aria-labelledby="newClientModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Modal para detalhes do cliente -->
+    <div class="modal fade" id="clienteModal" tabindex="-1" aria-labelledby="clienteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="newClientModalLabel">Cadastrar Novo Cliente</h5>
+                    <h5 class="modal-title" id="clienteModalLabel">Detalhes do Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="newClientForm">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="id_nome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="id_nome" name="nome" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 id="clienteNome"></h4>
+                            <p><strong><i class="fas fa-map-marker-alt me-2"></i>Cidade:</strong> <span id="clienteCidade"></span></p>
+                            <p><strong><i class="fas fa-flag me-2"></i>UF:</strong> <span id="clienteUF"></span></p>
+                            <p><strong><i class="fas fa-phone me-2"></i>Telefone:</strong> <span id="clienteTelefone"></span></p>
+                            <p><strong><i class="fas fa-home me-2"></i>Bairro:</strong> <span id="clienteBairro"></span></p>
+                            <p><strong><i class="fas fa-road me-2"></i>Logradouro:</strong> <span id="clienteLogradouro"></span></p>
+                            <p><strong><i class="fas fa-check-circle me-2"></i>Status:</strong> <span id="clienteStatus"></span></p>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_logradouro" class="form-label">Logradouro</label>
-                            <input type="text" class="form-control" id="id_logradouro" name="logradouro" required>
+                        <div class="col-md-6">
+                            <h5>Histórico de Compras</h5>
+                            <ul id="historicoCompras" class="list-group">
+                                <!-- Histórico de compras será preenchido dinamicamente -->
+                            </ul>
                         </div>
-                        <div class="mb-3">
-                            <label for="id_bairro" class="form-label">Bairro</label>
-                            <input type="text" class="form-control" id="id_bairro" name="bairro" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_cidade" class="form-label">Cidade</label>
-                            <input type="text" class="form-control" id="id_cidade" name="cidade" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_uf" class="form-label">UF</label>
-                            <input type="text" class="form-control" id="id_uf" name="uf" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="id_telefone" class="form-label">Telefone</label>
-                            <input type="text" class="form-control" id="id_telefone" name="telefone" required>
-                        </div>
-                    </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveNewClient">Cadastrar Cliente</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal de Edição de Cliente -->
-    <div class="modal fade" id="editClientModal" tabindex="-1" aria-labelledby="editClientModalLabel" aria-hidden="true">
+    <!-- Modal para adicionar/editar cliente -->
+    <div class="modal fade" id="addClienteModal" tabindex="-1" aria-labelledby="addClienteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editClientModalLabel">Editar Cliente</h5>
+                    <h5 class="modal-title" id="addClienteModalLabel">Adicionar Cliente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="editClientForm">
+                    <form id="clienteForm">
                         {% csrf_token %}
-                        <input type="hidden" id="edit_cliente_id" name="cliente_id">
+                        <input type="hidden" id="clienteId" name="id">
                         <div class="mb-3">
-                            <label for="edit_nome" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="edit_nome" name="nome" required>
+                            <label for="clienteNomeInput" class="form-label">Nome do Cliente</label>
+                            <input type="text" class="form-control" id="clienteNomeInput" name="nome" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_logradouro" class="form-label">Logradouro</label>
-                            <input type="text" class="form-control" id="edit_logradouro" name="logradouro" required>
+                            <label for="clienteCidadeInput" class="form-label">Cidade</label>
+                            <input type="text" class="form-control" id="clienteCidadeInput" name="cidade" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_bairro" class="form-label">Bairro</label>
-                            <input type="text" class="form-control" id="edit_bairro" name="bairro" required>
+                            <label for="clienteUFInput" class="form-label">UF</label>
+                            <input type="text" class="form-control" id="clienteUFInput" name="uf" required maxlength="2">
                         </div>
                         <div class="mb-3">
-                            <label for="edit_cidade" class="form-label">Cidade</label>
-                            <input type="text" class="form-control" id="edit_cidade" name="cidade" required>
+                            <label for="clienteTelefoneInput" class="form-label">Telefone</label>
+                            <input type="tel" class="form-control" id="clienteTelefoneInput" name="telefone" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_uf" class="form-label">UF</label>
-                            <input type="text" class="form-control" id="edit_uf" name="uf" required>
+                            <label for="clienteBairroInput" class="form-label">Bairro</label>
+                            <input type="text" class="form-control" id="clienteBairroInput" name="bairro" required>
                         </div>
                         <div class="mb-3">
-                            <label for="edit_telefone" class="form-label">Telefone</label>
-                            <input type="text" class="form-control" id="edit_telefone" name="telefone" required>
+                            <label for="clienteLogradouroInput" class="form-label">Logradouro</label>
+                            <input type="text" class="form-control" id="clienteLogradouroInput" name="logradouro" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="clienteStatusInput" class="form-label">Status</label>
+                            <select class="form-select" id="clienteStatusInput" name="status" required>
+                                <option value="active">Ativo</option>
+                                <option value="inactive">Inativo</option>
+                            </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="saveEditClient">Salvar Alterações</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCliente()">Salvar</button>
                 </div>
             </div>
         </div>
@@ -434,159 +471,86 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cadastro de novo cliente
-            document.getElementById('saveNewClient').addEventListener('click', function() {
-                const form = document.getElementById('newClientForm');
-                const formData = new FormData(form);
+        function openClienteModal(id, nome, cidade, uf, telefone, bairro, logradouro, status) {
+            document.getElementById('clienteNome').textContent = nome;
+            document.getElementById('clienteCidade').textContent = cidade;
+            document.getElementById('clienteUF').textContent = uf;
+            document.getElementById('clienteTelefone').textContent = telefone;
+            document.getElementById('clienteBairro').textContent = bairro;
+            document.getElementById('clienteLogradouro').textContent = logradouro;
+            document.getElementById('clienteStatus').textContent = status === 'active' ? 'Ativo' : 'Inativo';
+            document.getElementById('clienteId').value = id;
 
-                fetch('{% url "cadastro_cliente" %}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                })
+            // Buscar histórico de compras do banco de dados
+            fetch(`/api/cliente/${id}/historico-compras/`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        const clientesList = document.getElementById('clientesList');
-                        const novoCliente = `
-                            <div class="col-md-6 col-lg-4 cliente-item" data-cliente-id="${data.id}">
-                                <div class="client-card">
-                                    <div class="client-info">
-                                        <h5 class="client-name">${data.nome}</h5>
-                                        <p class="client-id">ID: ${data.id}</p>
-                                        <p class="client-detail"><strong>Logradouro:</strong> ${data.logradouro}</p>
-                                        <p class="client-detail"><strong>Bairro:</strong> ${data.bairro}</p>
-                                        <p class="client-detail"><strong>Cidade:</strong> ${data.cidade}</p>
-                                        <p class="client-detail"><strong>UF:</strong> ${data.uf}</p>
-                                        <p class="client-detail"><strong>Telefone:</strong> ${data.telefone}</p>
-                                    </div>
-                                    <div class="client-actions">
-                                        <button class="btn btn-sm btn-outline-primary me-2 edit-client" data-cliente-id="${data.id}" data-bs-toggle="modal" data-bs-target="#editClientModal">
-                                            <i class="fas fa-edit me-1"></i>Editar
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger delete-client" data-cliente-id="${data.id}">
-                                            <i class="fas fa-trash-alt me-1"></i>Excluir
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        clientesList.insertAdjacentHTML('afterbegin', novoCliente);
-                        form.reset();
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('newClientModal'));
-                        modal.hide();
-                    } else {
-                        alert('Erro ao cadastrar cliente: ' + JSON.stringify(data.errors));
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Ocorreu um erro ao cadastrar o cliente.');
-                });
-            });
-
-            // Edição de cliente
-            document.querySelectorAll('.edit-client').forEach(button => {
-                button.addEventListener('click', function() {
-                    const clienteId = this.getAttribute('data-cliente-id');
-                    const clienteCard = document.querySelector(`.cliente-item[data-cliente-id="${clienteId}"]`);
-                    const nome = clienteCard.querySelector('.client-name').textContent;
-                    const logradouro = clienteCard.querySelector('.client-detail:nth-child(3)').textContent.replace('Logradouro: ', '');
-                    const bairro = clienteCard.querySelector('.client-detail:nth-child(4)').textContent.replace('Bairro: ', '');
-                    const cidade = clienteCard.querySelector('.client-detail:nth-child(5)').textContent.replace('Cidade: ', '');
-                    const uf = clienteCard.querySelector('.client-detail:nth-child(6)').textContent.replace('UF: ', '');
-                    const telefone = clienteCard.querySelector('.client-detail:nth-child(7)').textContent.replace('Telefone: ', '');
-
-                    document.getElementById('edit_cliente_id').value = clienteId;
-                    document.getElementById('edit_nome').value = nome;
-                    document.getElementById('edit_logradouro').value = logradouro;
-                    document.getElementById('edit_bairro').value = bairro;
-                    document.getElementById('edit_cidade').value = cidade;
-                    document.getElementById('edit_uf').value = uf;
-                    document.getElementById('edit_telefone').value = telefone;
-                });
-            });
-
-            document.getElementById('saveEditClient').addEventListener('click', function() {
-                const form = document.getElementById('editClientForm');
-                const formData = new FormData(form);
-                const clienteId = formData.get('cliente_id');
-
-                fetch(`/clientes/editar/${clienteId}/`, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const clienteCard = document.querySelector(`.cliente-item[data-cliente-id="${clienteId}"]`);
-                        clienteCard.querySelector('.client-name').textContent = data.nome;
-                        clienteCard.querySelector('.client-detail:nth-child(3)').innerHTML = `<strong>Logradouro:</strong> ${data.logradouro}`;
-                        clienteCard.querySelector('.client-detail:nth-child(4)').innerHTML = `<strong>Bairro:</strong> ${data.bairro}`;
-                        clienteCard.querySelector('.client-detail:nth-child(5)').innerHTML = `<strong>Cidade:</strong> ${data.cidade}`;
-                        clienteCard.querySelector('.client-detail:nth-child(6)').innerHTML = `<strong>UF:</strong> ${data.uf}`;
-                        clienteCard.querySelector('.client-detail:nth-child(7)').innerHTML = `<strong>Telefone:</strong> ${data.telefone}`;
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('editClientModal'));
-                        modal.hide();
-                    } else {
-                        alert('Erro ao editar cliente: ' + JSON.stringify(data.errors));
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Ocorreu um erro ao editar o cliente.');
-                });
-            });
-
-            // Exclusão de cliente
-            document.querySelectorAll('.delete-client').forEach(button => {
-                button.addEventListener('click', function() {
-                    const clienteId = this.getAttribute('data-cliente-id');
-                    if (confirm('Tem certeza que deseja excluir este cliente?')) {
-                        fetch(`/clientes/excluir/${clienteId}/`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': '{{ csrf_token }}'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                const clienteCard = document.querySelector(`.cliente-item[data-cliente-id="${clienteId}"]`);
-                                clienteCard.remove();
-                            } else {
-                                alert('Erro ao excluir cliente: ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erro:', error);
-                            alert('Ocorreu um erro ao excluir o cliente.');
+                    const historicoList = document.getElementById('historicoCompras');
+                    historicoList.innerHTML = '';
+                    if (data.length > 0) {
+                        data.forEach(compra => {
+                            const li = document.createElement('li');
+                            li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                            li.innerHTML = `
+                                <span>${new Date(compra.data).toLocaleDateString()}</span>
+                                <span class="badge bg-primary rounded-pill">R$ ${compra.valor.toFixed(2)}</span>
+                            `;
+                            historicoList.appendChild(li);
                         });
+                    } else {
+                        historicoList.innerHTML = '<li class="list-group-item text-center">Nenhuma compra registrada para este cliente.</li>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar histórico de compras:', error);
+                    document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item text-center">Erro ao carregar o histórico de compras.</li>';
+                });
+
+            var modal = new bootstrap.Modal(document.getElementById('clienteModal'));
+            modal.show();
+        }
+
+
+        function saveCliente() {
+            var form = document.getElementById('clienteForm');
+            var formData = new FormData(form);
+
+            fetch('{% url "cadastro_cliente" %}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao salvar o cliente: ' + JSON.stringify(data.errors));
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao salvar o cliente.');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchClientes = document.getElementById('searchClientes');
+            const clienteCards = document.querySelectorAll('.cliente-card');
+
+            searchClientes.addEventListener('input', function() {
+                const searchQuery = this.value.toLowerCase();
+                clienteCards.forEach(card => {
+                    const clienteNome = card.querySelector('.cliente-name').textContent.toLowerCase();
+                    const clienteInfo = card.querySelector('.cliente-info').textContent.toLowerCase();
+                    if (clienteNome.includes(searchQuery) || clienteInfo.includes(searchQuery)) {
+                        card.closest('.col').style.display = '';
+                    } else {
+                        card.closest('.col').style.display = 'none';
                     }
                 });
-            });
-        });
-    </script>
-    <script>
-        const searchClientes = document.getElementById('searchClientes');
-        const clienteItems = document.querySelectorAll('.col-md-6.col-lg-4.cliente-item');
-
-        searchClientes.addEventListener('input', function() {
-            const searchQuery = this.value.toLowerCase();
-            clienteItems.forEach(item => {
-                const clienteNome = item.querySelector('.client-name').textContent.toLowerCase();
-                const clienteId = item.querySelector('.client-id').textContent.toLowerCase();
-                if (clienteNome.includes(searchQuery) || clienteId.includes(searchQuery)) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
             });
         });
     </script>

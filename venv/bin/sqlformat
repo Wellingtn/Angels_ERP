@@ -1,4 +1,4 @@
-#!/home/wellingtonjuan/Projetos/angels_erp/venv/bin/python3
+#!/home/wellingtonjuan/angels_erp/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+import os
+from django.utils import timezone
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_('email address'), unique=True)
@@ -34,7 +36,6 @@ class Vendedora(models.Model):
                 os.remove(self.contrato.path)
         super(Vendedora, self).delete(*args, **kwargs)
 
-
 class EstoqueVendedora(models.Model):
     vendedora = models.ForeignKey(Vendedora, on_delete=models.CASCADE)
     produto = models.ForeignKey('Produto', on_delete=models.CASCADE)
@@ -56,8 +57,6 @@ class Produto(models.Model):
     def __str__(self):
         return f"{self.codigo} - {self.nome}"
 
-
-
 class Cliente(models.Model):
     nome = models.CharField(max_length=100)
     logradouro = models.CharField(max_length=200, default="Não informado")
@@ -68,6 +67,26 @@ class Cliente(models.Model):
 
     def __str__(self):
         return self.nome
+
+    def historico_compras(self):
+        return self.compras.all().order_by('-data')
+
+class Compra(models.Model):
+    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='compras')
+    data = models.DateTimeField(default=timezone.now)
+    valor_total = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return f"Compra de {self.cliente.nome} em {self.data.strftime('%d/%m/%Y')}"
+
+class ItemCompra(models.Model):
+    compra = models.ForeignKey(Compra, on_delete=models.CASCADE, related_name='itens')
+    produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
+    quantidade = models.PositiveIntegerField()
+    preco_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.quantidade}x {self.produto.nome} em {self.compra}"
 
 class Acerto(models.Model):
     vendedora = models.ForeignKey(Vendedora, on_delete=models.CASCADE, related_name='acertos')
@@ -81,7 +100,6 @@ class Acerto(models.Model):
     def __str__(self):
         return f"Acerto {self.numero_pedido} - {self.vendedora.nome}"
 
-
 class ItemAcerto(models.Model):
     acerto = models.ForeignKey(Acerto, on_delete=models.CASCADE, related_name='items')
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
@@ -91,3 +109,4 @@ class ItemAcerto(models.Model):
 
     def __str__(self):
         return f"{self.acerto.numero_pedido} - {self.produto.nome}"
+
