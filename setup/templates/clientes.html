@@ -199,7 +199,7 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
         .cliente-details {
-            padding: 2rem; /* Aumentado de 1.5rem para 2rem */
+            padding: 2rem;
         }
         .cliente-name {
             font-size: 1.2rem;
@@ -213,7 +213,7 @@
             margin-bottom: 0.5rem;
         }
         .cliente-icon {
-            font-size: 4rem; /* Aumentado de 3rem para 4rem */
+            font-size: 4rem;
             color: #9333ea;
             margin-bottom: 1.5rem;
         }
@@ -261,23 +261,104 @@
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;
         }
-        .status-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            padding: 0.5rem 1rem;
-            border-radius: 2rem; /* Aumentado de 1rem para 2rem */
-            font-size: 0.875rem;
+        .purchase-history {
+            background-color: #f8fafc;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .purchase-summary {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .purchase-summary h6 {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        .purchase-summary p {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .purchase-item {
+            background-color: #ffffff;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .purchase-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .purchase-item h6 {
+            color: #4a5568;
+            margin-bottom: 0.5rem;
+        }
+        .purchase-item p {
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+        .purchase-item .total {
             font-weight: 600;
-            text-transform: uppercase;
+            color: #2d3748;
         }
-        .status-active {
-            background-color: #48bb78;
-            color: #ffffff;
+        .purchase-details {
+            background-color: #f1f5f9;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 0.5rem;
         }
-        .status-inactive {
-            background-color: #f56565;
+        .purchase-details ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .purchase-details li {
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
+        }
+        .btn-toggle-details {
+            background-color: transparent;
+            border: none;
+            color: #9333ea;
+            font-size: 0.9rem;
+            padding: 0;
+            text-decoration: underline;
+            transition: all 0.3s ease;
+        }
+        .btn-toggle-details:hover {
+            color: #7e22ce;
+        }
+        .icon-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: #9333ea;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .icon-container i {
             color: #ffffff;
+            font-size: 0.8rem;
+        }
+        .col-md-6 p {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            color: #4a5568;
+        }
+        .col-md-6 .icon-container {
+            margin-right: 0.75rem;
+        }
+        .col-md-6 strong {
+            margin-right: 0.5rem;
+            color: #2d3748;
         }
     </style>
 </head>
@@ -292,7 +373,7 @@
                     <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
-                    <a class="btn btn-highlight mb-2" href="#">
+                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
@@ -353,16 +434,14 @@
                     <div class="col">
                         <div class="card cliente-card h-100">
                             <div class="card-body cliente-details">
-                                <div class="text-center mb-4">  <!-- Update: Added mb-4 class -->
+                                <div class="text-center mb-4">
                                     <i class="fas fa-user-circle cliente-icon"></i>
                                 </div>
                                 <h5 class="card-title cliente-name text-center">{{ cliente.nome }}</h5>
                                 <p class="card-text cliente-info text-center"><i class="fas fa-map-marker-alt me-2"></i>{{ cliente.cidade }} - {{ cliente.uf }}</p>
                                 <p class="card-text cliente-info text-center"><i class="fas fa-phone me-2"></i>{{ cliente.telefone }}</p>
                                 <p class="card-text cliente-info text-center"><i class="fas fa-home me-2"></i>{{ cliente.bairro }}</p>
-                                <span class="status-badge {% if cliente.status == 'active' %}status-active{% else %}status-inactive{% endif %}">
-                                    {% if cliente.status == 'active' %}Ativo{% else %}Inativo{% endif %}
-                                </span>
+                                <p class="card-text cliente-info text-center ultima-compra" style="display: none;">{{ cliente.ultima_compra|default:"-" }}</p>
                                 <div class="cliente-actions">
                                     <button class="btn btn-sm btn-primary btn-action" onclick="openClienteModal('{{ cliente.id }}', '{{ cliente.nome }}', '{{ cliente.cidade }}', '{{ cliente.uf }}', '{{ cliente.telefone }}', '{{ cliente.bairro }}', '{{ cliente.logradouro }}', '{{ cliente.status }}')">
                                         <i class="fas fa-eye"></i> Detalhes
@@ -392,25 +471,62 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <h4 id="clienteNome"></h4>
-                            <p><strong><i class="fas fa-map-marker-alt me-2"></i>Cidade:</strong> <span id="clienteCidade"></span></p>
-                            <p><strong><i class="fas fa-flag me-2"></i>UF:</strong> <span id="clienteUF"></span></p>
-                            <p><strong><i class="fas fa-phone me-2"></i>Telefone:</strong> <span id="clienteTelefone"></span></p>
-                            <p><strong><i class="fas fa-home me-2"></i>Bairro:</strong> <span id="clienteBairro"></span></p>
-                            <p><strong><i class="fas fa-road me-2"></i>Logradouro:</strong> <span id="clienteLogradouro"></span></p>
-                            <p><strong><i class="fas fa-check-circle me-2"></i>Status:</strong> <span id="clienteStatus"></span></p>
+                            <h4 id="clienteNome" class="mb-4"></h4>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </span>
+                                <strong>Cidade:</strong> <span id="clienteCidade"></span>
+                            </p>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-flag"></i>
+                                </span>
+                                <strong>UF:</strong> <span id="clienteUF"></span>
+                            </p>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-phone"></i>
+                                </span>
+                                <strong>Telefone:</strong> <span id="clienteTelefone"></span>
+                            </p>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-home"></i>
+                                </span>
+                                <strong>Bairro:</strong> <span id="clienteBairro"></span>
+                            </p>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-road"></i>
+                                </span>
+                                <strong>Logradouro:</strong> <span id="clienteLogradouro"></span>
+                            </p>
+                            <p>
+                                <span class="icon-container">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                                <strong>Status:</strong> <span id="clienteStatus"></span>
+                            </p>
                         </div>
                         <div class="col-md-6">
-                            <h5>Histórico de Compras</h5>
-                            <ul id="historicoCompras" class="list-group">
-                                <!-- Histórico de compras será preenchido dinamicamente -->
-                            </ul>
+                            <div class="purchase-history">
+                                <div class="purchase-summary">
+                                    <h6>Resumo de Compras</h6>
+                                    <p><strong>Total Gasto:</strong> <span id="totalGasto">R$ 0,00</span></p>
+                                    <p><strong>Número de Compras:</strong> <span id="numeroCompras">0</span></p>
+                                    <p><strong>Última Compra:</strong> <span id="ultimaCompra">-</span></p>
+                                </div>
+                                <h6 class="mb-3">Histórico de Compras</h6>
+                                <div id="historicoCompras">
+                                    <!-- As compras serão inseridas aqui dinamicamente -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    
                 </div>
             </div>
         </div>
@@ -478,49 +594,96 @@
             document.getElementById('clienteTelefone').textContent = telefone;
             document.getElementById('clienteBairro').textContent = bairro;
             document.getElementById('clienteLogradouro').textContent = logradouro;
-            document.getElementById('clienteStatus').textContent = status === 'active' ? 'Ativo' : 'Inativo';
-            document.getElementById('clienteId').value = id;
-
+            
             // Buscar histórico de compras
             fetch(`/api/cliente/${id}/historico-compras/`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        const historicoList = document.getElementById('historicoCompras');
-                        historicoList.innerHTML = '';
+                        const historicoCompras = document.getElementById('historicoCompras');
+                        historicoCompras.innerHTML = '';
+                        let totalGasto = 0;
+                        let numeroCompras = 0;
+                        let ultimaCompra = '-';
+
                         if (data.compras.length > 0) {
-                            data.compras.forEach(compra => {
-                                const li = document.createElement('li');
-                                li.className = 'list-group-item';
-                                li.innerHTML = `
-                                    <strong>Data:</strong> ${compra.data}<br>
-                                    <strong>Valor Total:</strong> R$ ${compra.valor.toFixed(2)}<br>
-                                    <strong>Itens:</strong><br>
-                                    <ul>
-                                        ${compra.itens.map(item => `
-                                            <li>${item.produto} - ${item.quantidade} x R$ ${item.preco_unitario.toFixed(2)}</li>
-                                        `).join('')}
-                                    </ul>
+                            data.compras.forEach((compra, index) => {
+                                totalGasto += compra.valor;
+                                numeroCompras++;
+
+                                if (index === 0) {
+                                    ultimaCompra = compra.data;
+                                }
+
+                                const compraElement = document.createElement('div');
+                                compraElement.className = 'purchase-item';
+                                compraElement.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="icon-container">
+                                                <i class="fas fa-shopping-bag"></i>
+                                            </div>
+                                            <span class="fw-bold">Compra #${numeroCompras}</span>
+                                        </div>
+                                        <span class="total">R$ ${compra.valor.toFixed(2)}</span>
+                                    </div>
+                                    <p class="mb-1"><small>${compra.data}</small></p>
+                                    <button class="btn-toggle-details" onclick="togglePurchaseDetails(${index})">Ver detalhes</button>
+                                    <div class="purchase-details" style="display: none;">
+                                        <ul>
+                                            ${compra.itens.map(item => `
+                                                <li>${item.produto} - ${item.quantidade} x R$ ${item.preco_unitario.toFixed(2)}</li>
+                                            `).join('')}
+                                        </ul>
+                                    </div>
                                 `;
-                                historicoList.appendChild(li);
+                                historicoCompras.appendChild(compraElement);
                             });
                         } else {
-                            historicoList.innerHTML = '<li class="list-group-item">Nenhuma compra registrada para este cliente.</li>';
+                            historicoCompras.innerHTML = '<p class="text-muted">Nenhuma compra registrada para este cliente.</p>';
                         }
+
+                        const ultimaCompraData = data.compras.length > 0 ? data.compras[0].data : '-';
+                        const statusAtivo = isClienteAtivo(ultimaCompraData);
+                        document.getElementById('clienteStatus').textContent = statusAtivo ? 'Ativo' : 'Inativo';
+                        document.getElementById('clienteStatus').className = statusAtivo ? 'text-success' : 'text-danger';
+
+                        document.getElementById('totalGasto').textContent = `R$ ${totalGasto.toFixed(2)}`;
+                        document.getElementById('numeroCompras').textContent = numeroCompras;
+                        document.getElementById('ultimaCompra').textContent = ultimaCompra;
                     } else {
                         console.error('Erro ao buscar histórico de compras:', data.error);
-                        document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item">Erro ao carregar o histórico de compras.</li>';
+                        document.getElementById('historicoCompras').innerHTML = '<p class="text-danger">Erro ao carregar o histórico de compras.</p>';
                     }
                 })
                 .catch(error => {
                     console.error('Erro ao buscar histórico de compras:', error);
-                    document.getElementById('historicoCompras').innerHTML = '<li class="list-group-item">Erro ao carregar o histórico de compras.</li>';
+                    document.getElementById('historicoCompras').innerHTML = '<p class="text-danger">Erro ao carregar o histórico de compras.</p>';
                 });
 
             var modal = new bootstrap.Modal(document.getElementById('clienteModal'));
             modal.show();
         }
 
+        function togglePurchaseDetails(index) {
+            const detailsElement = document.querySelectorAll('.purchase-details')[index];
+            const buttonElement = document.querySelectorAll('.btn-toggle-details')[index];
+            if (detailsElement.style.display === 'none') {
+                detailsElement.style.display = 'block';
+                buttonElement.textContent = 'Ocultar detalhes';
+            } else {
+                detailsElement.style.display = 'none';
+                buttonElement.textContent = 'Ver detalhes';
+            }
+        }
+
+        function isClienteAtivo(ultimaCompra) {
+            if (!ultimaCompra || ultimaCompra === '-') return false;
+            const hoje = new Date();
+            const dataUltimaCompra = new Date(ultimaCompra.split('/').reverse().join('-'));
+            const diferencaMeses = (hoje.getFullYear() - dataUltimaCompra.getFullYear()) * 12 + hoje.getMonth() - dataUltimaCompra.getMonth();
+            return diferencaMeses < 2;
+        }
 
         function saveCliente() {
             var form = document.getElementById('clienteForm');
