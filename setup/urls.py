@@ -16,6 +16,7 @@ urlpatterns = [
     path('vendedoras/<int:vendedora_id>/acerto/', views.acerto_vendedora, name='acerto_vendedora_com_id'),
     path('vendedoras/cadastro/', views.cadastro_vendedora, name='cadastro_vendedora'),
     path('vendedoras/contrato/<int:vendedora_id>/', views.download_contrato, name='download_contrato'),
+    path('vendedoras/atualizar/', views.atualizar_vendedora, name='atualizar_vendedora'),  # Add this line
     path('clientes/', views.clientes, name='clientes'),
     path('clientes/cadastro/', views.cadastro_cliente, name='cadastro_cliente'),
     path('clientes/editar/<int:cliente_id>/', views.editar_cliente, name='editar_cliente'),
@@ -30,6 +31,5 @@ urlpatterns = [
     path('api/cliente/<int:cliente_id>/historico-compras/', views.historico_compras_cliente, name='historico_compras_cliente'),
     path('nova-venda/', views.nova_venda, name='nova_venda'),
     path('api/produto/<str:codigo>/', views.get_produto_info, name='get_produto_info'),
-    path('produtos/atualizar/', views.atualizar_produto, name='atualizar_produto'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

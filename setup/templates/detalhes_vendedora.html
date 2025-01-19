@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}Detalhes da Vendedora - Angels ERP{% endblock %}
 
@@ -303,7 +304,7 @@
                     <a class="btn btn-highlight mb-2" href="#">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
-                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
+                    <a class="btn btn-highlight mb-2" href="#">
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
@@ -576,6 +577,7 @@
                 </div>
                 <div class="modal-body">
                     <form id="editInfoForm">
+                        <input type="hidden" id="editId" value="{{ vendedora.id }}">
                         <div class="mb-3">
                             <label for="editNome" class="form-label">Nome</label>
                             <input type="text" class="form-control" id="editNome" value="{{ vendedora.nome }}">
@@ -616,7 +618,18 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        const csrftoken = '{{ csrf_token }}';
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM fully loaded');
+            console.log('Vendedora data:', {
+                id: '{{ vendedora.id }}',
+                nome: '{{ vendedora.nome }}',
+                cidade: '{{ vendedora.cidade }}',
+                uf: '{{ vendedora.uf }}',
+                telefone: '{{ vendedora.telefone1 }}'
+            });
+            console.log('Estoque vendedora:', {{ estoque_vendedora|safe }});
+            console.log('Total estoque:', {{ total_estoque }});
             // Inicializa o calendário principal
             const nextSettlementCalendar = flatpickr("#nextSettlementCalendar", {
                 inline: true,
@@ -671,6 +684,28 @@
 
                     // Aqui você pode adicionar código para salvar a nova data no servidor
                     console.log('Nova data de acerto:', newDate);
+                    //Exemplo de fetch com tratamento de erro e token CSRF
+                    fetch('{% url "concluir_acerto" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify({ date: newDate })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Success:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ocorreu um erro ao salvar o acerto. Por favor, tente novamente.');
+                    });
                 }
             });
 
@@ -683,80 +718,85 @@
             }, 100);
 
             // Código existente para os gráficos
-            var ctx = document.getElementById('salesChart').getContext('2d');
-            var salesChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    datasets: [{
-                        label: 'Vendas Mensais',
-                        data: [12000, 19000, 15000, 25000, 22000, 30000],
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: true,
-                            text: 'Vendas Mensais'
-                        }
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded');
+            } else {
+                console.log('Chart.js is loaded successfully');
+                var ctx = document.getElementById('salesChart').getContext('2d');
+                var salesChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                        datasets: [{
+                            label: 'Vendas Mensais',
+                            data: [12000, 19000, 15000, 25000, 22000, 30000],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Vendas Mensais'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            var ctxPerformance = document.getElementById('performanceChart').getContext('2d');
-            var performanceChart = new Chart(ctxPerformance, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                    datasets: [{
-                        label: 'Desempenho 2023',
-                        data: [12000, 19000, 15000, 25000, 22000, 30000],
-                        borderColor: 'rgb(75, 192, 192)',
-                        tension: 0.1
-                    },
-                    {
-                        label: 'Desempenho 2022',
-                        data: [10000, 15000, 13000, 20000, 18000, 25000],
-                        borderColor: 'rgb(255, 99, 132)',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
+                var ctxPerformance = document.getElementById('performanceChart').getContext('2d');
+                var performanceChart = new Chart(ctxPerformance, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                        datasets: [{
+                            label: 'Desempenho 2023',
+                            data: [1200<merged_code_continued>
+0, 19000, 15000, 25000, 22000, 30000],
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
                         },
-                        title: {
-                            display: true,
-                            text: 'Comparação de Desempenho Mês a Mês'
-                        }
+                        {
+                            label: 'Desempenho 2022',
+                            data: [10000, 15000, 13000, 20000, 18000, 25000],
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Comparação de Desempenho Mês a Mês'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
 
             // Manipula o salvamento das informações pessoais
             document.getElementById('saveInfoChanges').addEventListener('click', function() {
-                // Aqui você deve implementar a lógica para salvar as alterações no servidor
-                // Por enquanto, vamos apenas simular uma atualização na interface
+                const id = document.getElementById('editId').value;
                 const nome = document.getElementById('editNome').value;
                 const telefone1 = document.getElementById('editTelefone1').value;
                 const telefone2 = document.getElementById('editTelefone2').value;
@@ -775,12 +815,43 @@
                 const editInfoModal = bootstrap.Modal.getInstance(document.getElementById('editInfoModal'));
                 editInfoModal.hide();
 
-                // Exibe uma mensagem de sucesso
-                alert('Informações atualizadas com sucesso!');
+                // Envia os dados para o servidor
+                fetch('{% url "atualizar_vendedora" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        nome: nome,
+                        telefone1: telefone1,
+                        telefone2: telefone2,
+                        email: email,
+                        bairro: bairro,
+                        cidade: cidade,
+                        uf: uf
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Informações atualizadas com sucesso!');
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocorreu um erro ao atualizar as informações. Por favor, tente novamente.');
+                });
             });
         });
     </script>
 </body>
 </html>
 {% endblock %}
+</merged_code_continued>
 

@@ -17,8 +17,12 @@ from django.db.models import Sum, Avg, Max, F
 from django.db import transaction
 from decimal import Decimal
 from django.views.decorators.http import require_http_methods
+from django.template.defaultfilters import register
 import os
 import json
+
+
+register.filter('multiply', lambda value, arg: value * arg)
 
 
 def user_login(request):
@@ -539,6 +543,7 @@ def get_produto_info(request, codigo):
         return JsonResponse({'success': False, 'error': 'Produto não encontrado'})
 
 
+
 def historico_compras_cliente(request, cliente_id):
     try:
         cliente = Cliente.objects.get(id=cliente_id)
@@ -651,3 +656,27 @@ def atualizar_produto(request):
         return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+    
+
+@require_http_methods(["POST"])
+def atualizar_vendedora(request):
+    try:
+        data = json.loads(request.body)
+        vendedora_id = data.get('id')
+        vendedora = get_object_or_404(Vendedora, id=vendedora_id)
+        
+        vendedora.nome = data.get('nome', vendedora.nome)
+        vendedora.telefone1 = data.get('telefone1', vendedora.telefone1)
+        vendedora.telefone2 = data.get('telefone2', vendedora.telefone2)
+        vendedora.email = data.get('email', vendedora.email)
+        vendedora.bairro = data.get('bairro', vendedora.bairro)
+        vendedora.cidade = data.get('cidade', vendedora.cidade)
+        vendedora.uf = data.get('uf', vendedora.uf)
+        
+        vendedora.save()
+        
+        return JsonResponse({'success': True, 'message': 'Informações da vendedora atualizadas com sucesso.'})
+    except Vendedora.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Vendedora não encontrada.'}, status=404)
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)}, status=500)
