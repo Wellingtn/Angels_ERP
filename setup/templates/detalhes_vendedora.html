@@ -41,6 +41,7 @@
             flex-direction: column;
             align-items: center;
             padding-top: 1rem;
+            width: 280px;
         }
 
         .sidebar .nav-link {
@@ -85,10 +86,6 @@
             margin-right: 8px;
         }
 
-        .custom-navbar {
-            background-color: var(--primary-light);
-            padding: 1rem;
-        }
         .sidebar .btn-highlight {
             background-color: #ffffff;
             color: #9333ea;
@@ -122,15 +119,20 @@
         }
         .custom-navbar {
             background-color: #a855f7;
-            margin-left: -1.5rem;
-            margin-right: -1.5rem;
-            padding-left: 1.5rem;
-            padding-right: 1.5rem;
+            margin-left: -15px;
+            margin-right: -15px;
+            padding-left: 15px;
+            padding-right: 15px;
+            width: calc(100% + 30px);
         }
 
         .navbar-brand {
             color: white;
             font-weight: 600;
+        }
+        .navbar-text {
+            font-size: 1rem;
+            font-weight: 500;
         }
 
         .info-card {
@@ -208,6 +210,7 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
         .calendar-weekday {
             display: grid;
@@ -298,6 +301,24 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
+        main {
+            padding-top: 0 !important;
+            padding-left: 0 !important;
+        }
+        .navbar-container {
+            margin-left: -15px;
+            margin-right: -15px;
+            width: calc(100% + 30px);
+        }
+        .main-content {
+            margin-left: 280px;
+            width: calc(100% - 280px);
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+        .content-wrapper {
+            padding-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -308,15 +329,14 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
-                    <a class="btn btn-highlight mb-2 d-flex justify-content-center align-items-center" href="{% url 'acerto_vendedora' %}">
+                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i>
-                        <span class="text-center">Novo Acerto</span>
+                        <span>Novo Acerto</span>
                     </a>
-                    <a class="btn btn-highlight mb-2 d-flex justify-content-center align-items-center" href="{% url 'nova_venda' %}">
+                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
                         <i class="fas fa-shopping-cart"></i>
-                        <span class="text-center">Nova Venda</span>
+                        <span>Nova Venda</span>
                     </a>
-                    
                     <div class="separator"></div>
                     <a class="nav-link mb-2" href="{% url 'dashboard' %}">
                         <i class="fas fa-tachometer-alt"></i>
@@ -347,164 +367,168 @@
                 </div>
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <nav class="navbar navbar-expand-lg navbar-dark custom-navbar mb-4">
-                    <div class="container-fluid">
-                        <a class="navbar-brand" href="#">Detalhes da Vendedora</a>
-                        <span class="navbar-text text-white d-flex align-items-center">
-                            Olá, {{ user.username }}
-                            {% if user.profile_picture %}
-                                <img src="{{ user.profile_picture.url }}" alt="Foto de perfil" class="rounded-circle ms-2" style="width: 30px; height: 30px; object-fit: cover;">
-                            {% else %}
-                                <div class="rounded-circle ms-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
-                                    <i class="fas fa-user text-white"></i>
-                                </div>
-                            {% endif %}
-                        </span>
-                    </div>
-                </nav>
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="navbar-container">
+                    <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+                        <div class="container-fluid">
+                            <a class="navbar-brand" href="#">Detalhes da Vendedora</a>
+                            <span class="navbar-text text-white d-flex align-items-center">
+                                Olá, {{ user.username }}
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture.url }}" alt="Foto de perfil" class="rounded-circle ms-2" style="width: 30px; height: 30px; object-fit: cover;">
+                                {% else %}
+                                    <div class="rounded-circle ms-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </nav>
+                </div>
 
-                <div class="row g-4 mb-4">
-                    <div class="col-md-12">
-                        <div class="info-card">
-                            <div class="row align-items-center">
-                                <div class="col-md-3 text-center">
-                                    {% if vendedora.foto %}
-                                        <img src="{{ vendedora.foto.url }}" alt="{{ vendedora.nome }}" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; object-fit: cover; border: 4px solid var(--primary-color);">
-                                    {% else %}
-                                        <div class="bg-secondary rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; margin: 0 auto;">
-                                            <i class="fas fa-user text-white" style="font-size: 6rem;"></i>
+                <div class="content-wrapper">
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-12">
+                            <div class="info-card">
+                                <div class="row align-items-center">
+                                    <div class="col-md-3 text-center">
+                                        {% if vendedora.foto %}
+                                            <img src="{{ vendedora.foto.url }}" alt="{{ vendedora.nome }}" class="img-fluid rounded-circle mb-3" style="width: 200px; height: 200px; object-fit: cover; border: 4px solid var(--primary-color);">
+                                        {% else %}
+                                            <div class="bg-secondary rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 200px; height: 200px; margin: 0 auto;">
+                                                <i class="fas fa-user text-white" style="font-size: 6rem;"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-5">
+                                        <h4 class="mb-3">{{ vendedora.nome }}</h4>
+                                        <p><strong>ID:</strong> {{ vendedora.id }}</p>
+                                        <p><i class="fas fa-phone-alt me-2"></i> {{ vendedora.telefone1 }}</p>
+                                        {% if vendedora.telefone2 %}
+                                        <p><i class="fas fa-phone-alt me-2"></i> {{ vendedora.telefone2 }}</p>
+                                        {% endif %}
+                                        <p><i class="fas fa-envelope me-2"></i> {{ vendedora.email|default:"Não informado" }}</p>
+                                        <p><i class="fas fa-map-marker-alt me-2"></i> {{ vendedora.bairro }}, {{ vendedora.cidade }}, {{ vendedora.uf }}</p>
+                                        <button class="btn-edit-profile mt-3" data-bs-toggle="modal" data-bs-target="#editInfoModal">
+                                            <i class="fas fa-user-edit"></i> Editar Perfil
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div id="nextSettlementCalendar">
+                                            <div class="calendar-header">
+                                                <button id="prevYear" class="btn btn-sm btn-outline-light">&lt;&lt;</button>
+                                                <button id="prevMonth" class="btn btn-sm btn-outline-light">&lt;</button>
+                                                <span id="currentMonth">Junho 2023</span>
+                                                <button id="nextMonth" class="btn btn-sm btn-outline-light">&gt;</button>
+                                                <button id="nextYear" class="btn btn-sm btn-outline-light">&gt;&gt;</button>
+                                            </div>
+                                            <div class="calendar-body">
+                                                <div class="calendar-weekday">
+                                                    <span>Dom</span>
+                                                    <span>Seg</span>
+                                                    <span>Ter</span>
+                                                    <span>Qua</span>
+                                                    <span>Qui</span>
+                                                    <span>Sex</span>
+                                                    <span>Sáb</span>
+                                                </div>
+                                                <div id="calendarDays"></div>
+                                            </div>
                                         </div>
-                                    {% endif %}
+                                    </div>
                                 </div>
-                                <div class="col-md-5">
-                                    <h4 class="mb-3">{{ vendedora.nome }}</h4>
-                                    <p><strong>ID:</strong> {{ vendedora.id }}</p>
-                                    <p><i class="fas fa-phone-alt me-2"></i> {{ vendedora.telefone1 }}</p>
-                                    {% if vendedora.telefone2 %}
-                                    <p><i class="fas fa-phone-alt me-2"></i> {{ vendedora.telefone2 }}</p>
-                                    {% endif %}
-                                    <p><i class="fas fa-envelope me-2"></i> {{ vendedora.email|default:"Não informado" }}</p>
-                                    <p><i class="fas fa-map-marker-alt me-2"></i> {{ vendedora.bairro }}, {{ vendedora.cidade }}, {{ vendedora.uf }}</p>
-                                    <button class="btn-edit-profile mt-3" data-bs-toggle="modal" data-bs-target="#editInfoModal">
-                                        <i class="fas fa-user-edit"></i> Editar Perfil
-                                    </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="chart-card">
+                                        <h5 class="card-title">Desempenho de Vendas</h5>
+                                        <canvas id="salesPerformanceChart"></canvas>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
-                                    <div id="nextSettlementCalendar">
-                                        <div class="calendar-header">
-                                            <button id="prevYear" class="btn btn-sm btn-outline-light">&lt;&lt;</button>
-                                            <button id="prevMonth" class="btn btn-sm btn-outline-light">&lt;</button>
-                                            <span id="currentMonth">Junho 2023</span>
-                                            <button id="nextMonth" class="btn btn-sm btn-outline-light">&gt;</button>
-                                            <button id="nextYear" class="btn btn-sm btn-outline-light">&gt;&gt;</button>
-                                        </div>
-                                        <div class="calendar-body">
-                                            <div class="calendar-weekday">
-                                                <span>Dom</span>
-                                                <span>Seg</span>
-                                                <span>Ter</span>
-                                                <span>Qua</span>
-                                                <span>Qui</span>
-                                                <span>Sex</span>
-                                                <span>Sáb</span>
-                                            </div>
-                                            <div id="calendarDays"></div>
+                                    <div class="chart-card">
+                                        <h5 class="card-title">Produtos Mais Vendidos</h5>
+                                        <canvas id="topProductsChart"></canvas>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="info-card h-100">
+                                        <h5 class="card-title">Histórico de Acertos</h5>
+                                        <div class="table-responsive">
+                                            <table class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Data</th>
+                                                        <th>Valor Total</th>
+                                                        <th>Comissão</th>
+                                                        <th>Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for acerto in acertos %}
+                                                    <tr>
+                                                        <td>{{ acerto.data_acerto|date:"d/m/Y" }}</td>
+                                                        <td>R$ {{ acerto.valor_total|floatformat:2 }}</td>
+                                                        <td>R$ {{ acerto.comissao|floatformat:2 }}</td>
+                                                        <td><span class="badge bg-success">{{ acerto.status }}</span></td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="4" class="text-center">Nenhum acerto registrado.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-4 mb-4">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="chart-card">
-                                    <h5 class="card-title">Desempenho de Vendas</h5>
-                                    <canvas id="salesPerformanceChart"></canvas>
+                    <div class="row g-4 mb-4">
+                        <div class="col-12">
+                            <div class="info-card">
+                                <h5 class="card-title">Estoque Atual da Vendedora</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Código</th>
+                                                <th>Produto</th>
+                                                <th>Quantidade</th>
+                                                <th>Valor Unitário</th>
+                                                <th>Valor Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in estoque_vendedora %}
+                                            <tr>
+                                                <td>{{ item.produto.codigo }}</td>
+                                                <td>{{ item.produto.nome }}</td>
+                                                <td>{{ item.quantidade }}</td>
+                                                <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
+                                                <td>R$ {{ item.valor_total|floatformat:2 }}</td>
+                                            </tr>
+                                            {% empty %}
+                                            <tr>
+                                                <td colspan="5" class="text-center">Nenhum produto no estoque desta vendedora.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <th colspan="4" class="text-end">Total:</th>
+                                                <th>R$ {{ total_estoque|floatformat:2 }}</th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="chart-card">
-                                    <h5 class="card-title">Produtos Mais Vendidos</h5>
-                                    <canvas id="topProductsChart"></canvas>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="info-card h-100">
-                                    <h5 class="card-title">Histórico de Acertos</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <thead>
-                                                <tr>
-                                                    <th>Data</th>
-                                                    <th>Valor Total</th>
-                                                    <th>Comissão</th>
-                                                    <th>Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {% for acerto in acertos %}
-                                                <tr>
-                                                    <td>{{ acerto.data_acerto|date:"d/m/Y" }}</td>
-                                                    <td>R$ {{ acerto.valor_total|floatformat:2 }}</td>
-                                                    <td>R$ {{ acerto.comissao|floatformat:2 }}</td>
-                                                    <td><span class="badge bg-success">{{ acerto.status }}</span></td>
-                                                </tr>
-                                                {% empty %}
-                                                <tr>
-                                                    <td colspan="4" class="text-center">Nenhum acerto registrado.</td>
-                                                </tr>
-                                                {% endfor %}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row g-4 mb-4">
-                    <div class="col-12">
-                        <div class="info-card">
-                            <h5 class="card-title">Estoque Atual da Vendedora</h5>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Código</th>
-                                            <th>Produto</th>
-                                            <th>Quantidade</th>
-                                            <th>Valor Unitário</th>
-                                            <th>Valor Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for item in estoque_vendedora %}
-                                        <tr>
-                                            <td>{{ item.produto.codigo }}</td>
-                                            <td>{{ item.produto.nome }}</td>
-                                            <td>{{ item.quantidade }}</td>
-                                            <td>R$ {{ item.produto.preco|floatformat:2 }}</td>
-                                            <td>R$ {{ item.valor_total|floatformat:2 }}</td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="5" class="text-center">Nenhum produto no estoque desta vendedora.</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="4" class="text-end">Total:</th>
-                                            <th>R$ {{ total_estoque|floatformat:2 }}</th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
                             </div>
                         </div>
                     </div>
@@ -762,15 +786,19 @@
                 const uf = document.getElementById('editUF').value;
 
                 // Atualiza os elementos na página
-                document.querySelector('h2').textContent = nome;
-                document.querySelector('p:contains("phone-alt")').innerHTML = `<i class="fas fa-phone-alt me-2"></i> ${telefone1}${telefone2 ? ', ' + telefone2 : ''}`;
+                document.querySelector('h4').textContent = nome;
+                document.querySelector('p:contains("phone-alt"):nth-of-type(1)').innerHTML = `<i class="fas fa-phone-alt me-2"></i> ${telefone1}`;
+                if(telefone2){
+                    document.querySelector('p:contains("phone-alt"):nth-of-type(2)').innerHTML = `<i class="fas fa-phone-alt me-2"></i> ${telefone2}`;
+                } else {
+                    document.querySelector('p:contains("phone-alt"):nth-of-type(2)').remove();
+                }
                 document.querySelector('p:contains("envelope")').innerHTML = `<i class="fas fa-envelope me-2"></i> ${email || 'Não informado'}`;
                 document.querySelector('p:contains("map-marker-alt")').innerHTML = `<i class="fas fa-map-marker-alt me-2"></i> ${bairro}, ${cidade}, ${uf}`;
 
                 // Fecha o modal
                 const editInfoModal = bootstrap.Modal.getInstance(document.getElementById('editInfoModal'));
                 editInfoModal.hide();
-
                 // Exibe uma mensagem de sucesso
                 alert('Informações atualizadas com sucesso!');
             });
