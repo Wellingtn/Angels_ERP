@@ -1,6 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Estoque - Angels ERP{% endblock %}
+
+{% block content %}
 <!DOCTYPE html>
 <html lang="pt-br">
-{% load static %}
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -237,44 +242,26 @@
         }
         .modal-content {
             border: none;
-            border-radius: 1rem;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            border-radius: 0.5rem;
         }
         .modal-header {
             background-color: #9333ea;
             color: #ffffff;
             border-bottom: none;
-            border-top-left-radius: 1rem;
-            border-top-right-radius: 1rem;
-            padding: 1.5rem;
         }
         .modal-title {
             font-weight: 600;
-            font-size: 1.25rem;
         }
         .modal-body {
-            padding: 2rem;
+            padding: 1.5rem;
         }
         .modal-footer {
             border-top: none;
-            padding: 1.5rem 2rem;
-            justify-content: space-between;
-        }
-        .btn-outline-primary {
-            color: #9333ea;
-            border-color: #9333ea;
-        }
-        .btn-outline-primary:hover {
-            background-color: #9333ea;
-            color: #ffffff;
+            padding: 1rem 1.5rem 1.5rem;
         }
         .form-label {
+            font-weight: 600;
             color: #4b5563;
-            font-weight: 500;
-        }
-        .form-control:focus {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 0.2rem rgba(147, 51, 234, 0.25);
         }
         .input-group-text {
             background-color: #f3f4f6;
@@ -320,139 +307,6 @@
             border-radius: 0;
             margin: 0 0.5rem;
         }
-        .edit-btn {
-            flex: 1;
-            margin: 0 5px;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: #4a5568;
-            background-color: #edf2f7;
-        }
-        .edit-btn:hover, .edit-btn.active {
-            background-color: #9333ea;
-            color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
-        }
-        .edit-btn i {
-            font-size: 1.1rem;
-        }
-        #editProductModal .modal-content {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        #editProductModal .modal-header {
-            background-color: #9333ea;
-            color: #ffffff;
-            border-bottom: none;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            padding: 20px 30px;
-        }
-        #editProductModal .modal-body {
-            padding: 30px;
-        }
-        #editProductModal .modal-footer {
-            border-top: none;
-            padding: 20px 30px;
-        }
-        .btn-close-white {
-            filter: brightness(0) invert(1);
-        }
-        #editProductModal .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-        #editProductModal .btn-outline-secondary {
-            color: #4a5568;
-            border-color: #cbd5e0;
-        }
-        #editProductModal .btn-outline-secondary:hover {
-            background-color: #edf2f7;
-            color: #2d3748;
-        }
-        #editProductModal .btn-danger {
-            background-color: #f56565;
-            border-color: #f56565;
-        }
-        #editProductModal .btn-danger:hover {
-            background-color: #e53e3e;
-            border-color: #e53e3e;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(245, 101, 101, 0.1);
-        }
-        #editProductModal .btn-primary {
-            background-color: #9333ea;
-            border-color: #9333ea;
-        }
-        #editProductModal .btn-primary:hover {
-            background-color: #7e22ce;
-            border-color: #7e22ce;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
-        }
-        .calculator-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-
-        .calculator-buttons .btn {
-            padding: 15px;
-            font-size: 18px;
-            border-radius: 0.75rem !important;
-        }
-        #editQuantitySection .input-group {
-            box-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-        #editQuantitySection .form-control:focus {
-            box-shadow: 0 0 0 0.25rem rgba(147, 51, 234, 0.25);
-        }
-        #editQuantitySection .btn-primary:hover {
-            background-color: #7e22ce;
-            border-color: #7e22ce;
-        }
-        #openCalculator {
-            max-width: 200px;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .form-control,
-        .input-group,
-        .input-group-text,
-        .btn {
-            border-radius: 1rem !important;
-            overflow: hidden;
-        }
-
-        .input-group .form-control:first-child,
-        .input-group .input-group-text:first-child,
-        .input-group .btn:first-child {
-            border-top-right-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-        }
-
-        .input-group .form-control:last-child,
-        .input-group .input-group-text:last-child,
-        .input-group .btn:last-child {
-            border-top-left-radius: 0 !important;
-            border-bottom-left-radius: 0 !important;
-        }
-
-        #editQuantitySection .input-group,
-        #editPriceSection .input-group,
-        #editAllSection .input-group {
-            box-shadow: 0 0 10px rgba(147, 51, 234, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -466,7 +320,7 @@
                     <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
-                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
+                    <a class="btn btn-highlight mb-2" href="#">
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
@@ -539,13 +393,13 @@
                         <div class="card">
                             <div class="card-body">
                                 <h6 class="card-title">Produto com mais unidades</h6>
-                                <p class="card-text">{{ produto_maior_qtd.nome }} ({{ produto_maior_qtd.quantidade }} unidades)</p>
+                                <p class="card-text">{{ produto_maior_qtd.nome }} ({{ produto_maior_qtd.quantidade }} un.)</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex justify-content-end align-items-center mb-4">
-                    <div class="search-container d-flex">
+                    <div class="search-container">
                         <input type="text" id="searchEstoque" class="form-control search-input" placeholder="Buscar produtos...">
                         <button class="btn search-button" type="button">
                             <i class="fas fa-search"></i>
@@ -609,76 +463,32 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProductModalLabel">Editar Produto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-between mb-4">
-                        <button class="btn btn-light edit-btn edit-price-btn" data-edit-type="price">
-                            <i class="fas fa-tag me-2"></i>Preço
-                        </button>
-                        <button class="btn btn-light edit-btn edit-quantity-btn" data-edit-type="quantity">
-                            <i class="fas fa-boxes me-2"></i>Quantidade
-                        </button>
-                        <button class="btn btn-light edit-btn edit-all-btn" data-edit-type="all">
-                            <i class="fas fa-edit me-2"></i>Tudo
-                        </button>
-                    </div>
-                    <!-- Update 2: Updated input fields in the modal -->
-                    <div id="editPriceSection" style="display: none;">
-                        <div class="mb-3">
-                            <label for="editPrice" class="form-label">Preço</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text">R$</span>
-                                <input type="number" class="form-control form-control-lg" id="editPrice" step="0.01" min="0">
-                            </div>
+                    <div class="mb-3">
+                        <label for="editQuantity" class="form-label">Quantidade</label>
+                        <input type="number" class="form-control text-center" id="editQuantity" min="0">
+                        <div class="quantity-control mt-2">
+                            <button class="btn btn-outline-secondary decrease-quantity" type="button">-</button>
+                            <button class="btn btn-outline-secondary increase-quantity" type="button">+</button>
                         </div>
                     </div>
-                    <div id="editQuantitySection" style="display: none;">
-                        <div class="mb-3">
-                            <label for="editQuantity" class="form-label">Quantidade</label>
-                            <div class="input-group input-group-lg">
-                                <input type="number" class="form-control form-control-lg" id="editQuantity" min="0">
-                                <button class="btn btn-primary btn-lg" type="button" id="openCalculator">
-                                    <i class="fas fa-calculator"></i>
-                                </button>
-                            </div>
+                    <div class="mb-3">
+                        <label for="editPrice" class="form-label">Preço</label>
+                        <div class="input-group">
+                            <span class="input-group-text">R$</span>
+                            <input type="number" class="form-control" id="editPrice" step="0.01" min="0">
                         </div>
                     </div>
-                    <div id="editAllSection" style="display: none;">
-                        <div class="mb-3">
-                            <label for="editName" class="form-label">Nome do Produto</label>
-                            <input type="text" class="form-control form-control-lg" id="editName">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editCode" class="form-label">Código</label>
-                            <input type="text" class="form-control form-control-lg" id="editCode">
-                        </div>
-                        <div class="mb-3">
-                            <label for="editAllPrice" class="form-label">Preço</label>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text">R$</span>
-                                <input type="number" class="form-control form-control-lg" id="editAllPrice" step="0.01" min="0">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="editAllQuantity" class="form-label">Quantidade</label>
-                            <div class="input-group input-group-lg">
-                                <input type="number" class="form-control form-control-lg" id="editAllQuantity" min="0">
-                                <button class="btn btn-primary btn-lg" type="button" id="openAllCalculator">
-                                    <i class="fas fa-calculator"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Valor Total</label>
+                        <div id="editTotalValue" class="form-control-plaintext"></div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger delete-product">
-                        <i class="fas fa-trash-alt me-2"></i>Excluir
-                    </button>
-                    <button type="button" class="btn btn-primary save-changes">
-                        <i class="fas fa-check me-2"></i>Concluir
-                    </button>
+                    <button type="button" class="btn btn-danger delete-product">Excluir Produto</button>
+                    <button type="button" class="btn btn-primary save-changes">Salvar Alterações</button>
                 </div>
             </div>
         </div>
@@ -728,245 +538,149 @@
         </div>
     </div>
 
-    <!-- Modal para a calculadora -->
-    <div class="modal fade" id="calculatorModal" tabindex="-1" aria-labelledby="calculatorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="calculatorModalLabel">Calculadora</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <input type="text"class="form-control" id="calculatorInput" readonly>
-                    </div>
-                    <div class="calculator-buttons">
-                        <button class="btn btn-outline-secondarybuttons">
-                        <button class="btn btn-outline-secondary calc-btn" data-value="7">7</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="8">8</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="9">9</button>
-                        <button class="btn btn-outline-primary calc-btn" data-value="/">/</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="4">4</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="5">5</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="6">6</button>
-                        <button class="btn btn-outline-primary calc-btn" data-value="*">*</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="1">1</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="2">2</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="3">3</button>
-                        <button class="btn btn-outline-primary calc-btn" data-value="-">-</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value="0">0</button>
-                        <button class="btn btn-outline-secondary calc-btn" data-value=".">.</button>
-                        <button class="btn btn-outline-danger" id="calcClear">C</button>
-                        <button class="btn btn-outline-primary calc-btn" data-value="+">+</button>
-                        <button class="btn btn-primary" id="calcEquals">=</button>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="calcApply">Aplicar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded');
-    let currentProductId;
-    const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-    const quantityInput = document.getElementById('editQuantity');
-    const priceInput = document.getElementById('editPrice');
-    const nameInput = document.getElementById('editName');
-    const codeInput = document.getElementById('editCode');
-    const allPriceInput = document.getElementById('editAllPrice');
-    const allQuantityInput = document.getElementById('editAllQuantity');
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentProductId;
+            const editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            const quantityInput = document.getElementById('editQuantity');
+            const priceInput = document.getElementById('editPrice');
 
-    const searchEstoque = document.getElementById('searchEstoque');
-    const produtoItems = document.querySelectorAll('tbody tr');
+            const searchEstoque = document.getElementById('searchEstoque');
+            const produtoItems = document.querySelectorAll('tbody tr');
 
-    searchEstoque.addEventListener('input', function() {
-        const searchQuery = this.value.toLowerCase();
-        produtoItems.forEach(item => {
-            const produtoNome = item.querySelector('td:nth-child(1) .fw-bold').textContent.toLowerCase();
-            const produtoCodigo = item.querySelector('td:nth-child(1) .text-muted').textContent.toLowerCase();
-            if (produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery)) {
-                item.style.display = '';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    });
-
-    document.querySelectorAll('.edit-product').forEach(button => {
-        button.addEventListener('click', function() {
-            console.log('Edit button clicked');
-            currentProductId = this.getAttribute('data-produto-id');
-            const row = this.closest('tr');
-            const currentQuantity = row.querySelector('.quantidade').textContent;
-            const currentPrice = row.querySelector('.preco-unitario').textContent.replace('R$ ', '');
-            const currentName = row.querySelector('.fw-bold').textContent;
-            const currentCode = row.querySelector('.text-muted').textContent;
-
-            quantityInput.value = currentQuantity;
-            priceInput.value = currentPrice;
-            nameInput.value = currentName;
-            codeInput.value = currentCode;
-            allPriceInput.value = currentPrice;
-            allQuantityInput.value = currentQuantity;
-
-            console.log('Opening modal');
-            editProductModal.show();
-        });
-    });
-
-    document.querySelectorAll('.edit-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            document.querySelectorAll('.edit-btn').forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            const editType = this.getAttribute('data-edit-type');
-            document.getElementById('editPriceSection').style.display = editType === 'price' ? 'block' : 'none';
-            document.getElementById('editQuantitySection').style.display = editType === 'quantity' ? 'block' : 'none';
-            document.getElementById('editAllSection').style.display = editType === 'all' ? 'block' : 'none';
-        });
-    });
-
-    document.querySelector('.save-changes').addEventListener('click', function() {
-        let updateData = {};
-        let updateUrl = '';
-
-        if (document.getElementById('editPriceSection').style.display === 'block') {
-            updateData = {
-                produto_id: currentProductId,
-                novo_preco: priceInput.value
-            };
-            updateUrl = '{% url "atualizar_preco_produto" %}';
-        } else if (document.getElementById('editQuantitySection').style.display === 'block') {
-            updateData = {
-                produto_id: currentProductId,
-                nova_quantidade: quantityInput.value
-            };
-            updateUrl = '{% url "atualizar_quantidade_produto" %}';
-        } else if (document.getElementById('editAllSection').style.display === 'block') {
-            updateData = {
-                produto_id: currentProductId,
-                nome: nameInput.value,
-                codigo: codeInput.value,
-                preco: allPriceInput.value,
-                quantidade: allQuantityInput.value
-            };
-            updateUrl = '{% url "atualizar_produto" %}';
-        }
-
-        fetch(updateUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: new URLSearchParams(updateData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                updateProductRow(currentProductId, data.produto);
-                editProductModal.hide();
-                alert('Produto atualizado com sucesso!');
-            } else {
-                alert('Erro ao atualizar produto: ' + data.message);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('Ocorreu um erro ao atualizar o produto.');
-        });
-    });
-
-    document.querySelector('.delete-product').addEventListener('click', function() {
-        if (confirm('Tem certeza que deseja excluir este produto?')) {
-            fetch('{% url "excluir_produto" %}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: `produto_id=${currentProductId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.querySelector(`tr[data-produto-id="${currentProductId}"]`).remove();
-                    editProductModal.hide();
-                    alert('Produto excluído com sucesso!');
-                } else {
-                    alert('Erro ao excluir o produto: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                alert('Ocorreu um erro ao excluir o produto.');
+            searchEstoque.addEventListener('input', function() {
+                const searchQuery = this.value.toLowerCase();
+                produtoItems.forEach(item => {
+                    const produtoNome = item.querySelector('td:nth-child(1) .fw-bold').textContent.toLowerCase();
+                    const produtoCodigo = item.querySelector('td:nth-child(1) .text-muted').textContent.toLowerCase();
+                    if (produtoNome.includes(searchQuery) || produtoCodigo.includes(searchQuery)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
             });
-        }
-    });
 
-    function updateProductRow(productId, productData) {
-        const row = document.querySelector(`tr[data-produto-id="${productId}"]`);
-        row.querySelector('.fw-bold').textContent = productData.nome;
-        row.querySelector('.text-muted').textContent = productData.codigo;
-        row.querySelector('.quantidade').textContent = productData.quantidade;
-        row.querySelector('.preco-unitario').textContent = `R$ ${parseFloat(productData.preco).toFixed(2)}`;
-        const totalValue = (productData.quantidade * productData.preco).toFixed(2);
-        row.querySelector('.valor-total').textContent = `R$ ${totalValue}`;
-    }
+            document.querySelectorAll('.edit-product').forEach(button => {
+                button.addEventListener('click', function() {
+                    currentProductId = this.getAttribute('data-produto-id');
+                    const row = this.closest('tr');
+                    quantityInput.value = row.querySelector('.quantidade').textContent;
+                    priceInput.value = row.querySelector('.preco-unitario').textContent.replace('R$ ', '');
+                    updateTotalValue();
+                    editProductModal.show();
+                });
+            });
 
-    const calculatorModal = new bootstrap.Modal(document.getElementById('calculatorModal'));
-    const calculatorInput = document.getElementById('calculatorInput');
-    const calcButtons = document.querySelectorAll('.calc-btn');
-    const calcClear = document.getElementById('calcClear');
-    const calcEquals = document.getElementById('calcEquals');
-    const calcApply = document.getElementById('calcApply');
+            function updateTotalValue() {
+                const quantity = parseInt(quantityInput.value);
+                const price = parseFloat(priceInput.value);
+                const totalValue = (quantity * price).toFixed(2);
+                document.getElementById('editTotalValue').textContent = `R$ ${totalValue}`;
+            }
 
-    document.getElementById('openCalculator').addEventListener('click', function() {
-        calculatorInput.value = quantityInput.value || '0';
-        calculatorModal.show();
-    });
+            quantityInput.addEventListener('input', updateTotalValue);
+            priceInput.addEventListener('input', updateTotalValue);
+            document.querySelector('.decrease-quantity').addEventListener('click', () => {
+                if (quantityInput.value > 0) {
+                    quantityInput.value = parseInt(quantityInput.value) - 1;
+                    updateTotalValue();
+                }
+            });
+            document.querySelector('.increase-quantity').addEventListener('click', () => {
+                quantityInput.value = parseInt(quantityInput.value) + 1;
+                updateTotalValue();
+            });
 
-    document.getElementById('openAllCalculator').addEventListener('click', function() {
-        calculatorInput.value = allQuantityInput.value || '0';
-        calculatorModal.show();
-    });
+            document.querySelector('.save-changes').addEventListener('click', function() {
+                const newQuantity = quantityInput.value;
+                const newPrice = priceInput.value;
 
+                // Update quantity
+                fetch('{% url "atualizar_quantidade_produto" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: `produto_id=${currentProductId}&quantidade=${newQuantity}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateProductRow(currentProductId, newQuantity, newPrice);
+                    } else {
+                        alert('Erro ao atualizar quantidade: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao atualizar a quantidade.');
+                });
 
-    calcButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            calculatorInput.value += this.dataset.value;
+                // Update price
+                fetch('{% url "atualizar_preco_produto" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: `produto_id=${currentProductId}&novo_preco=${newPrice}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateProductRow(currentProductId, newQuantity, newPrice);
+                        editProductModal.hide();
+                        alert('Produto atualizado com sucesso!');
+                    } else {
+                        alert('Erro ao atualizar preço: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao atualizar o preço.');
+                });
+            });
+
+            document.querySelector('.delete-product').addEventListener('click', function() {
+                if (confirm('Tem certeza que deseja excluir este produto?')) {
+                    fetch('{% url "excluir_produto" %}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: `produto_id=${currentProductId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelector(`tr[data-produto-id="${currentProductId}"]`).remove();
+                            editProductModal.hide();
+                            alert('Produto excluído com sucesso!');
+                        } else {
+                            alert('Erro ao excluir o produto: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro:', error);
+                        alert('Ocorreu um erro ao excluir o produto.');
+                    });
+                }
+            });
+
+            function updateProductRow(productId, quantity, price) {
+                const row = document.querySelector(`tr[data-produto-id="${productId}"]`);
+                row.querySelector('.quantidade').textContent = quantity;
+                row.querySelector('.preco-unitario').textContent = `R$ ${parseFloat(price).toFixed(2)}`;
+                const totalValue = (quantity * price).toFixed(2);
+                row.querySelector('.valor-total').textContent = `R$ ${totalValue}`;
+            }
         });
-    });
-
-    calcClear.addEventListener('click', function() {
-        calculatorInput.value = '';
-    });
-
-    calcEquals.addEventListener('click', function() {
-        try {
-            calculatorInput.value = eval(calculatorInput.value);
-        } catch (error) {
-            alert('Cálculo inválido');
-        }
-    });
-
-    calcApply.addEventListener('click', function() {
-        const newValue = Math.max(0, Math.round(parseFloat(calculatorInput.value) || 0));
-        if (document.getElementById('editQuantitySection').style.display === 'block') {
-            quantityInput.value = newValue;
-        } else if (document.getElementById('editAllSection').style.display === 'block') {
-            allQuantityInput.value = newValue;
-        }
-        calculatorModal.hide();
-    });
-});
     </script>
 </body>
 </html>
+{% endblock %}
 
