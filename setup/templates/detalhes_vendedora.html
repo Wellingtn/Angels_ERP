@@ -329,14 +329,15 @@
                     <div class="text-center mb-4">
                         <img src="{% static 'images/logo_Angels_branco.png' %}" alt="Angels Logo" class="img-fluid" style="max-width: 150px;">
                     </div>
-                    <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
+                    <a class="btn btn-highlight mb-2 d-flex justify-content-center align-items-center" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i>
-                        <span>Novo Acerto</span>
+                        <span class="text-center">Novo Acerto</span>
                     </a>
-                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
+                    <a class="btn btn-highlight mb-2 d-flex justify-content-center align-items-center" href="{% url 'nova_venda' %}">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Nova Venda</span>
+                        <span class="text-center">Nova Venda</span>
                     </a>
+                    
                     <div class="separator"></div>
                     <a class="nav-link mb-2" href="{% url 'dashboard' %}">
                         <i class="fas fa-tachometer-alt"></i>
