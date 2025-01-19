@@ -646,6 +646,7 @@ def atualizar_produto(request):
             'success': True, 
             'message': 'Produto atualizado com sucesso.',
             'produto': {
+                'id': produto.id,
                 'nome': produto.nome,
                 'codigo': produto.codigo,
                 'preco': float(produto.preco),
@@ -656,6 +657,8 @@ def atualizar_produto(request):
         return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)})
+
+
     
 
 @require_http_methods(["POST"])
@@ -680,3 +683,5 @@ def atualizar_vendedora(request):
         return JsonResponse({'success': False, 'message': 'Vendedora não encontrada.'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'message': str(e)}, status=500)
+
+
