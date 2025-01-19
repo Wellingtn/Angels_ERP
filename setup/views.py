@@ -564,3 +564,90 @@ def historico_compras_cliente(request, cliente_id):
         return JsonResponse({'success': False, 'error': 'Cliente não encontrado'}, status=404)
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+@require_http_methods(["POST"])
+def editar_produto(request, produto_id):
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        produto.nome = request.POST.get('nome')
+        produto.codigo = request.POST.get('codigo')
+        produto.preco = request.POST.get('preco')
+        if 'foto' in request.FILES:
+            produto.foto = request.FILES['foto']
+        produto.save()
+        return JsonResponse({'success': True})
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Produto não encontrado'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+@require_http_methods(["POST"])
+def excluir_produto(request, produto_id):
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        produto.delete()
+        return JsonResponse({'success': True})
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Produto não encontrado'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+    
+
+@require_http_methods(["POST"])
+def atualizar_preco_produto(request):
+    produto_id = request.POST.get('produto_id')
+    novo_preco = request.POST.get('novo_preco')
+    
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        produto.preco = novo_preco
+        produto.save()
+        return JsonResponse({'success': True, 'message': 'Preço atualizado com sucesso.'})
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_http_methods(["POST"])
+def excluir_produto(request):
+    produto_id = request.POST.get('produto_id')
+    
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        produto.delete()
+        return JsonResponse({'success': True, 'message': 'Produto excluído com sucesso.'})
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})
+
+@require_http_methods(["POST"])
+def atualizar_produto(request):
+    produto_id = request.POST.get('produto_id')
+    nome = request.POST.get('nome')
+    codigo = request.POST.get('codigo')
+    preco = request.POST.get('preco')
+    quantidade = request.POST.get('quantidade')
+    
+    try:
+        produto = Produto.objects.get(id=produto_id)
+        produto.nome = nome
+        produto.codigo = codigo
+        produto.preco = preco
+        produto.quantidade = quantidade
+        produto.save()
+        return JsonResponse({
+            'success': True, 
+            'message': 'Produto atualizado com sucesso.',
+            'produto': {
+                'nome': produto.nome,
+                'codigo': produto.codigo,
+                'preco': float(produto.preco),
+                'quantidade': produto.quantidade
+            }
+        })
+    except Produto.DoesNotExist:
+        return JsonResponse({'success': False, 'message': 'Produto não encontrado.'})
+    except Exception as e:
+        return JsonResponse({'success': False, 'message': str(e)})

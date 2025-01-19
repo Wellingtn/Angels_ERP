@@ -22,11 +22,14 @@ urlpatterns = [
     path('clientes/excluir/<int:cliente_id>/', views.excluir_cliente, name='excluir_cliente'),
     path('produtos/cadastro/', views.cadastro_produto, name='cadastro_produto'),
     path('produtos/atualizar-quantidade/', views.atualizar_quantidade_produto, name='atualizar_quantidade_produto'),
+    path('produtos/atualizar-preco/', views.atualizar_preco_produto, name='atualizar_preco_produto'),
+    path('produtos/excluir/', views.excluir_produto, name='excluir_produto'),
     path('get_vendedora_info/', views.get_vendedora_info, name='get_vendedora_info'),
     path('concluir_acerto/', views.concluir_acerto, name='concluir_acerto'),
     path('get_produto_info/', views.get_produto_info, name='get_produto_info'),
     path('api/cliente/<int:cliente_id>/historico-compras/', views.historico_compras_cliente, name='historico_compras_cliente'),
     path('nova-venda/', views.nova_venda, name='nova_venda'),
     path('api/produto/<str:codigo>/', views.get_produto_info, name='get_produto_info'),
+    path('produtos/atualizar/', views.atualizar_produto, name='atualizar_produto'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
