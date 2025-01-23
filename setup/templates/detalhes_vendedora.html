@@ -457,37 +457,52 @@
                                         <canvas id="topProductsChart"></canvas>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="info-card h-100">
-                                        <h5 class="card-title">Histórico de Acertos</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Data</th>
-                                                        <th>Valor Total</th>
-                                                        <th>Comissão</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {% for acerto in acertos %}
-                                                    <tr>
-                                                        <td>{{ acerto.data_acerto|date:"d/m/Y" }}</td>
-                                                        <td>R$ {{ acerto.valor_total|floatformat:2 }}</td>
-                                                        <td>R$ {{ acerto.comissao|floatformat:2 }}</td>
-                                                        <td><span class="badge bg-success">{{ acerto.status }}</span></td>
-                                                    </tr>
-                                                    {% empty %}
-                                                    <tr>
-                                                        <td colspan="4" class="text-center">Nenhum acerto registrado.</td>
-                                                    </tr>
-                                                    {% endfor %}
-                                                </tbody>
-                                            </table>
+                                <div class="card mt-4">
+                                    <div class="card-header">
+                                        <h5>Histórico de Acertos</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>Data</th>
+                                                    <th>Comissão</th>
+                                                    <th>Total</th>
+                                                    <th>Detalhes</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for acerto in acertos %}
+                                                <tr>
+                                                    <td>{{ acerto.data_acerto|date:"d/m/Y" }}</td>
+                                                    <td>R$ {{ acerto.comissao|floatformat:2 }}</td>
+                                                    <td>R$ {{ acerto.total|floatformat:2 }}</td>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-primary" onclick="showAcertoDetails({{ acerto.id }})">
+                                                            Ver Detalhes
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="modal fade" id="acertoDetailsModal" tabindex="-1" aria-labelledby="acertoDetailsModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="acertoDetailsModalLabel">Detalhes do Acerto</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body" id="acertoDetailsContent">
+                                                <!-- O conteúdo será preenchido dinamicamente via JavaScript -->
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -601,6 +616,49 @@
                 currentMonthElement.textContent = firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
 
                 let calendarHTML = '';
+
+
+
+                function showAcertoDetails(acertoId) {
+                    fetch(`/api/acerto/${acertoId}/detalhes/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const modalContent = document.getElementById('acertoDetailsContent');
+                            modalContent.innerHTML = `
+                                <h6>Data: ${data.data_acerto}</h6>
+                                <h6>Comissão: R$ ${data.comissao.toFixed(2)}</h6>
+                                <h6>Total: R$ ${data.total.toFixed(2)}</h6>
+                                <h6>Status: ${data.status}</h6>
+                                <h6>Itens:</h6>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Quantidade</th>
+                                            <th>Valor Unitário</th>
+                                            <th>Valor Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${data.itens.map(item => `
+                                            <tr>
+                                                <td>${item.produto}</td>
+                                                <td>${item.quantidade}</td>
+                                                <td>R$ ${item.valor_unitario.toFixed(2)}</td>
+                                                <td>R$ ${item.valor_total.toFixed(2)}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            `;
+                            const modal = new bootstrap.Modal(document.getElementById('acertoDetailsModal'));
+                            modal.show();
+                        })
+                        .catch(error => {
+                            console.error('Erro ao carregar detalhes do acerto:', error);
+                            alert('Erro ao carregar detalhes do acerto.');
+                        });
+                }
                 
                 // Add empty cells for days before the first of the month
                 for (let i = 0; i < firstDay.getDay(); i++) {

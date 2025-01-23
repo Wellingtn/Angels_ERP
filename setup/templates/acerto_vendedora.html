@@ -15,8 +15,7 @@
     <style>
         body, html {
             height: 100%;
-            background-color: #f0f4f8;
-            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
         }
         .sidebar {
             position: fixed;
@@ -135,82 +134,44 @@
             font-size: 1rem;
             font-weight: 500;
         }
-        .custom-container {
-            background-color: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            padding: 2.5rem;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-        .form-control, .form-select {
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            padding: 0.75rem 1rem;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #9333ea;
-            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
-        }
-        .btn {
-            border-radius: 10px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
         .btn-primary {
             background-color: #9333ea;
             border-color: #9333ea;
             color: #ffffff;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
         }
-        .btn-primary:hover, .btn-primary:focus {
+        .btn-primary:hover {
             background-color: #7e22ce;
             border-color: #7e22ce;
+            color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
+            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.3);
         }
-        .btn-secondary {
-            background-color: #f3e8ff;
-            border-color: #f3e8ff;
-            color: #9333ea;
+        .acerto-form {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        .btn-secondary:hover, .btn-secondary:focus {
-            background-color: #e9d5ff;
-            border-color: #e9d5ff;
-            color: #7e22ce;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(147, 51, 234, 0.1);
+        .form-control {
+            border-radius: 0.5rem;
         }
         .table {
-            border-radius: 10px;
+            border-radius: 0.5rem;
             overflow: hidden;
         }
         .table th {
             background-color: #f3e8ff;
             color: #6b21a8;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
         }
-        .table td {
-            vertical-align: middle;
+        .step {
+            display: none;
         }
-        .btn-sm {
-            padding: 0.4rem 0.75rem;
-            font-size: 0.875rem;
-        }
-        .btn-danger {
-            background-color: #fee2e2;
-            border-color: #fee2e2;
-            color: #dc2626;
-        }
-        .btn-danger:hover, .btn-danger:focus {
-            background-color: #fecaca;
-            border-color: #fecaca;
-            color: #b91c1c;
+        .step.active {
+            display: block;
         }
     </style>
 </head>
@@ -225,7 +186,7 @@
                     <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
-                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
+                    <a class="btn btn-highlight mb-2" href="#">
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
@@ -269,77 +230,81 @@
                     </div>
                 </nav>
 
-                <div class="custom-container">
-                    <form id="acertoForm" class="needs-validation" novalidate>
+                <div class="acerto-form">
+                    <form id="acertoForm">
                         {% csrf_token %}
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label for="vendedora" class="form-label">Vendedora</label>
-                                <select class="form-select" id="vendedora" name="vendedora" required>
-                                    <option value="">Selecione uma vendedora</option>
-                                    {% for vendedora in vendedoras %}
-                                        <option value="{{ vendedora.id }}">{{ vendedora.nome }}</option>
-                                    {% endfor %}
-                                </select>
-                                <div class="invalid-feedback">
-                                    Por favor, selecione uma vendedora.
+                        <div class="step active" id="step1">
+                            <h3 class="mb-4">Etapa 1: Acerto de Produtos</h3>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="vendedoraSelect" class="form-label">Selecione a Vendedora</label>
+                                    <select class="form-select" id="vendedoraSelect" required>
+                                        <option value="">Escolha uma vendedora</option>
+                                        {% for vendedora in vendedoras %}
+                                            <option value="{{ vendedora.id }}">{{ vendedora.nome }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dataAcerto" class="form-label">Data do Acerto</label>
+                                    <input type="date" class="form-control" id="dataAcerto" required>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="dataAcerto" class="form-label">Data do Acerto</label>
-                                <input type="date" class="form-control" id="dataAcerto" name="dataAcerto" required>
-                                <div class="invalid-feedback">
-                                    Por favor, selecione a data do acerto.
+                            <div class="mb-4">
+                                <h5>Produtos da Vendedora</h5>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Quantidade Atual</th>
+                                            <th>Quantidade Vendida</th>
+                                            <th>Quantidade Devolvida</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="produtosVendedoraTableBody">
+                                        <!-- Produtos serão adicionados aqui dinamicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="comissaoVendedora" class="form-label">Comissão da Vendedora</label>
+                                    <input type="text" class="form-control" id="comissaoVendedora" readonly>
                                 </div>
                             </div>
+                            <button type="button" class="btn btn-primary" onclick="proximaEtapa()">Próxima Etapa</button>
                         </div>
-                        <div class="row g-4 mb-4">
-                            <div class="col-md-6">
-                                <label for="endereco" class="form-label">Endereço</label>
-                                <input type="text" class="form-control" id="endereco" readonly>
+
+                        <div class="step" id="step2">
+                            <h3 class="mb-4">Etapa 2: Novos Produtos</h3>
+                            <div class="mb-4">
+                                <h5>Adicionar Novos Produtos</h5>
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Produto</th>
+                                            <th>Quantidade</th>
+                                            <th>Preço Unitário</th>
+                                            <th>Total</th>
+                                            <th>Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="novosProdutosTableBody">
+                                        <!-- Novos produtos serão adicionados aqui dinamicamente -->
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn btn-primary" onclick="adicionarNovoProduto()">
+                                    <i class="fas fa-plus me-2"></i>Adicionar Produto
+                                </button>
                             </div>
-                            <div class="col-md-3">
-                                <label for="cidade" class="form-label">Cidade</label>
-                                <input type="text" class="form-control" id="cidade" readonly>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="totalAcerto" class="form-label">Total do Acerto</label>
+                                    <input type="text" class="form-control" id="totalAcerto" readonly>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label for="telefone" class="form-label">Telefone</label>
-                                <input type="text" class="form-control" id="telefone" readonly>
-                            </div>
-                        </div>
-                        <div class="mb-4">
-                            <button type="button" id="addItem" class="btn btn-secondary">
-                                <i class="fas fa-plus-circle me-2"></i>Adicionar Item
-                            </button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Código</th>
-                                        <th>Quantidade</th>
-                                        <th>Descrição</th>
-                                        <th>Preço Unitário</th>
-                                        <th>Total</th>
-                                        <th>Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="orderItems">
-                                    <!-- Items will be added here dynamically -->
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="4" class="text-end"><strong>Total:</strong></td>
-                                        <td class="text-end"><strong>R$ <span id="totalValue">0.00</span></strong></td>
-                                        <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="text-end mt-4">
-                            <button type="button" id="concluirAcerto" class="btn btn-primary">
-                                <i class="fas fa-check-circle me-2"></i>Concluir Acerto
-                            </button>
+                            <button type="button" class="btn btn-secondary me-2" onclick="voltarEtapa()">Voltar</button>
+                            <button type="submit" class="btn btn-primary">Concluir Acerto</button>
                         </div>
                     </form>
                 </div>
@@ -347,194 +312,146 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        $(document).ready(function() {
-            (function () {
-                'use strict'
-                var forms = document.querySelectorAll('.needs-validation')
-                Array.prototype.slice.call(forms)
-                    .forEach(function (form) {
-                        form.addEventListener('submit', function (event) {
-                            if (!form.checkValidity()) {
-                                event.preventDefault()
-                                event.stopPropagation()
-                            }
-                            form.classList.add('was-validated')
-                        }, false)
-                    })
-            })()
+        let produtosVendedora = [];
+        let novosProdutos = [];
 
-            $('#addItem').click(function() {
-                const newRow = `
-                    <tr>
-                        <td>
-                            <input type="text" class="form-control form-control-sm ref-input" placeholder="Código" required>
-                        </td>
-                        <td>
-                            <input type="number" class="form-control form-control-sm quantity-input" value="1" min="1" required>
-                        </td>
-                        <td>
-                            <input type="text" class="form-control form-control-sm description-input" readonly>
-                        </td>
-                        <td>
-                            <input type="number" class="form-control form-control-sm price-input" step="0.01" readonly>
-                        </td>
-                        <td class="text-end total-cell">R$ 0.00</td>
-                        <td>
-                            <button type="button" class="btn btn-sm btn-danger remove-item">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+        function carregarProdutosVendedora(vendedoraId) {
+            fetch(`/api/vendedora/${vendedoraId}/produtos/`)
+                .then(response => response.json())
+                .then(data => {
+                    produtosVendedora = data;
+                    atualizarTabelaProdutosVendedora();
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar produtos da vendedora:', error);
+                });
+        }
+
+        function atualizarTabelaProdutosVendedora() {
+            const tbody = document.getElementById('produtosVendedoraTableBody');
+            tbody.innerHTML = '';
+            produtosVendedora.forEach(produto => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${produto.nome}</td>
+                    <td>${produto.quantidade}</td>
+                    <td><input type="number" class="form-control" value="0" min="0" max="${produto.quantidade}" onchange="calcularComissao()"></td>
+                    <td><input type="number" class="form-control" value="0" min="0" max="${produto.quantidade}" onchange="calcularComissao()"></td>
                 `;
-                $('#orderItems').append(newRow);
+                tbody.appendChild(tr);
             });
+        }
 
-            $(document).on('blur', '.ref-input', function() {
-                const row = $(this).closest('tr');
-                const codigo = $(this).val();
-                
-                if (codigo) {
-                    $.get('{% url "get_produto_info" %}', { codigo: codigo })
-                        .done(function(response) {
-                            if (response.success) {
-                                row.find('.description-input').val(response.nome);
-                                row.find('.price-input').val(response.preco);
-                                
-                                // Update total
-                                const quantity = parseInt(row.find('.quantity-input').val()) || 0;
-                                const price = parseFloat(response.preco) || 0;
-                                const total = quantity * price;
-                                row.find('.total-cell').text(`R$ ${total.toFixed(2)}`);
-                                updateTotal();
-                            } else {
-                                alert('Produto não encontrado');
-                                row.find('.description-input').val('');
-                                row.find('.price-input').val('');
-                                row.find('.total-cell').text('R$ 0.00');
-                            }
-                        })
-                        .fail(function() {
-                            alert('Erro ao buscar informações do produto');
-                        });
-                }
+        function calcularComissao() {
+            // Implemente a lógica de cálculo da comissão aqui
+            // Por exemplo, um valor fixo ou uma porcentagem das vendas
+            const comissao = 100; // Valor fictício
+            document.getElementById('comissaoVendedora').value = `R$ ${comissao.toFixed(2)}`;
+        }
+
+        function proximaEtapa() {
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step2').classList.add('active');
+        }
+
+        function voltarEtapa() {
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step1').classList.add('active');
+        }
+
+        function adicionarNovoProduto() {
+            const novoProduto = {
+                id: Date.now(),
+                nome: '',
+                quantidade: 1,
+                precoUnitario: 0,
+                total: 0
+            };
+            novosProdutos.push(novoProduto);
+            atualizarTabelaNovosProdutos();
+        }
+
+        function atualizarTabelaNovosProdutos() {
+            const tbody = document.getElementById('novosProdutosTableBody');
+            tbody.innerHTML = '';
+            novosProdutos.forEach(produto => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><input type="text" class="form-control" value="${produto.nome}" onchange="atualizarNovoProduto(${produto.id}, 'nome', this.value)"></td>
+                    <td><input type="number" class="form-control" value="${produto.quantidade}" onchange="atualizarNovoProduto(${produto.id}, 'quantidade', this.value)"></td>
+                    <td><input type="number" class="form-control" value="${produto.precoUnitario}" onchange="atualizarNovoProduto(${produto.id}, 'precoUnitario', this.value)"></td>
+                    <td>${produto.total.toFixed(2)}</td>
+                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removerNovoProduto(${produto.id})"><i class="fas fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(tr);
             });
+            calcularTotalAcerto();
+        }
 
-            $(document).on('click', '.remove-item', function() {
-                $(this).closest('tr').remove();
-                updateTotal();
-            });
-
-            $('#concluirAcerto').click(function() {
-                if (!$('#acertoForm')[0].checkValidity()) {
-                    $('#acertoForm').addClass('was-validated');
-                    return;
-                }
-
-                if (!$('#vendedora').val()) {
-                    alert('Por favor, selecione uma vendedora');
-                    return;
-                }
-
-                if (!$('#dataAcerto').val()) {
-                    alert('Por favor, selecione a data do acerto');
-                    return;
-                }
-
-                const items = [];
-                let hasErrors = false;
-
-                $('#orderItems tr').each(function() {
-                    const row = $(this);
-                    const ref = row.find('.ref-input').val();
-                    const quantity = parseInt(row.find('.quantity-input').val());
-                    const price = parseFloat(row.find('.price-input').val());
-                    
-                    if (!ref || !quantity || !price) {
-                        hasErrors = true;
-                        return false;
-                    }
-
-                    items.push({
-                        ref: ref,
-                        quantity: quantity,
-                        price: price,
-                        total: (quantity * price).toFixed(2)
-                    });
-                });
-
-                if (hasErrors || items.length === 0) {
-                    alert('Por favor, preencha todos os campos corretamente');
-                    return;
-                }
-
-                const data = {
-                    vendedora_id: $('#vendedora').val(),
-                    cidade: $('#cidade').val(),
-                    data_acerto: $('#dataAcerto').val(),
-                    items: items,
-                    total: $('#totalValue').text()
-                };
-
-                $.ajax({
-                    url: '{% url "concluir_acerto" %}',
-                    method: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json',
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            alert('Acerto concluído com sucesso!');
-                            window.location.href = '{% url "vendedoras" %}';
-                        } else {
-                            alert('Erro ao concluir o acerto: ' + response.error);
-                        }
-                    },
-                    error: function() {
-                        alert('Erro ao processar a requisição.');
-                    }
-                });
-            });
-
-            $('#vendedora').change(function() {
-                const vendedoraId = $(this).val();
-                if (vendedoraId) {
-                    $.get('{% url "get_vendedora_info" %}', { vendedora_id: vendedoraId })
-                        .done(function(response) {
-                            $('#endereco').val(response.logradouro + ', ' + response.bairro);
-                            $('#cidade').val(response.cidade);
-                            $('#telefone').val(response.telefone1);
-                        })
-                        .fail(function() {
-                            alert('Erro ao buscar informações da vendedora');
-                        });
-                } else {
-                    $('#endereco').val('');
-                    $('#cidade').val('');
-                    $('#telefone').val('');
-                }
-            });
-
-            $(document).on('input', '.quantity-input', function() {
-                const row = $(this).closest('tr');
-                const quantity = parseFloat(row.find('.quantity-input').val()) || 0;
-                const price = parseFloat(row.find('.price-input').val()) || 0;
-                const total = quantity * price;
-                row.find('.total-cell').text(`R$ ${total.toFixed(2)}`);
-                updateTotal();
-            });
-
-            function updateTotal() {
-                let total = 0;
-                $('.total-cell').each(function() {
-                    total += parseFloat($(this).text().replace('R$ ', '')) || 0;
-                });
-                $('#totalValue').text(total.toFixed(2));
+        function atualizarNovoProduto(id, campo, valor) {
+            const produto = novosProdutos.find(p => p.id === id);
+            if (produto) {
+                produto[campo] = valor;
+                produto.total = produto.quantidade * produto.precoUnitario;
+                atualizarTabelaNovosProdutos();
             }
+        }
+
+        function removerNovoProduto(id) {
+            novosProdutos = novosProdutos.filter(p => p.id !== id);
+            atualizarTabelaNovosProdutos();
+        }
+
+        function calcularTotalAcerto() {
+            const total = novosProdutos.reduce((sum, produto) => sum + produto.total, 0);
+            document.getElementById('totalAcerto').value = `R$ ${total.toFixed(2)}`;
+        }
+
+        document.getElementById('vendedoraSelect').addEventListener('change', function() {
+            const vendedoraId = this.value;
+            if (vendedoraId) {
+                carregarProdutosVendedora(vendedoraId);
+            }
+        });
+
+        document.getElementById('acertoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                vendedora_id: document.getElementById('vendedoraSelect').value,
+                data_acerto: document.getElementById('dataAcerto').value,
+                produtos_vendedora: produtosVendedora.map((p, index) => ({
+                    id: p.id,
+                    quantidade_vendida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(3) input`).value,
+                    quantidade_devolvida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(4) input`).value,
+                })),
+                novos_produtos: novosProdutos,
+                comissao: document.getElementById('comissaoVendedora').value.replace('R$ ', ''),
+                total_acerto: document.getElementById('totalAcerto').value.replace('R$ ', '')
+            };
+
+            fetch('{% url "concluir_acerto" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Acerto concluído com sucesso!');
+                    window.location.href = '{% url "dashboard" %}';
+                } else {
+                    alert('Erro ao concluir o acerto: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao concluir o acerto.');
+            });
         });
     </script>
 </body>

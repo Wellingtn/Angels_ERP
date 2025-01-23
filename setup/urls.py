@@ -21,7 +21,6 @@ urlpatterns = [
     path('clientes/editar/<int:cliente_id>/', views.editar_cliente, name='editar_cliente'),
     path('clientes/excluir/<int:cliente_id>/', views.excluir_cliente, name='excluir_cliente'),
     path('produtos/cadastro/', views.cadastro_produto, name='cadastro_produto'),
-    path('produtos/atualizar/', views.atualizar_produto, name='atualizar_produto'),
     path('produtos/atualizar-quantidade/', views.atualizar_quantidade_produto, name='atualizar_quantidade_produto'),
     path('produtos/atualizar-preco/', views.atualizar_preco_produto, name='atualizar_preco_produto'),
     path('produtos/excluir/', views.excluir_produto, name='excluir_produto'),
@@ -31,5 +30,6 @@ urlpatterns = [
     path('api/cliente/<int:cliente_id>/historico-compras/', views.historico_compras_cliente, name='historico_compras_cliente'),
     path('nova-venda/', views.nova_venda, name='nova_venda'),
     path('api/produto/<str:codigo>/', views.get_produto_info, name='get_produto_info'),
+    path('api/acerto/<int:acerto_id>/detalhes/', views.get_acerto_details, name='get_acerto_details'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
