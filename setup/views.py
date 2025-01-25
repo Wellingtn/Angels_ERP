@@ -336,11 +336,6 @@ def editar_produto(request, produto_id):
         return JsonResponse({'success': False, 'errors': form.errors})
 
 @login_required
-def novo_acerto(request):
-    vendedoras = Vendedora.objects.all()
-    return render(request, 'novo_acerto.html', {'vendedoras': vendedoras})
-
-@login_required
 def acerto_vendedora(request, vendedora_id=None):
     vendedoras = Vendedora.objects.all()
     context = {'vendedoras': vendedoras}
@@ -727,3 +722,4 @@ def get_acerto_details(request, acerto_id):
         return JsonResponse({'error': 'Acerto não encontrado'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+

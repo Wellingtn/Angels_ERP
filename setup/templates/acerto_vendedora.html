@@ -186,7 +186,7 @@
                     <a class="btn btn-highlight mb-2" href="{% url 'acerto_vendedora' %}">
                         <i class="fas fa-plus-circle"></i> Novo Acerto
                     </a>
-                    <a class="btn btn-highlight mb-2" href="#">
+                    <a class="btn btn-highlight mb-2" href="{% url 'nova_venda' %}">
                         <i class="fas fa-shopping-cart"></i> Nova Venda
                     </a>
                     <div class="separator"></div>
@@ -255,6 +255,7 @@
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
+                                            <th>Código</th>
                                             <th>Produto</th>
                                             <th>Quantidade Atual</th>
                                             <th>Quantidade Vendida</th>
@@ -279,9 +280,23 @@
                             <h3 class="mb-4">Etapa 2: Novos Produtos</h3>
                             <div class="mb-4">
                                 <h5>Adicionar Novos Produtos</h5>
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control" id="novoProdutoCodigo" placeholder="Código do Produto">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="number" class="form-control" id="novoProdutoQuantidade" placeholder="Quantidade">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-primary" onclick="adicionarNovoProduto()">
+                                            <i class="fas fa-plus me-2"></i>Adicionar Produto
+                                        </button>
+                                    </div>
+                                </div>
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
+                                            <th>Código</th>
                                             <th>Produto</th>
                                             <th>Quantidade</th>
                                             <th>Preço Unitário</th>
@@ -293,9 +308,6 @@
                                         <!-- Novos produtos serão adicionados aqui dinamicamente -->
                                     </tbody>
                                 </table>
-                                <button type="button" class="btn btn-primary" onclick="adicionarNovoProduto()">
-                                    <i class="fas fa-plus me-2"></i>Adicionar Produto
-                                </button>
                             </div>
                             <div class="row mb-4">
                                 <div class="col-md-6">
@@ -335,6 +347,7 @@
             produtosVendedora.forEach(produto => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
+                    <td>${produto.codigo}</td>
                     <td>${produto.nome}</td>
                     <td>${produto.quantidade}</td>
                     <td><input type="number" class="form-control" value="0" min="0" max="${produto.quantidade}" onchange="calcularComissao()"></td>
@@ -362,15 +375,42 @@
         }
 
         function adicionarNovoProduto() {
-            const novoProduto = {
-                id: Date.now(),
-                nome: '',
-                quantidade: 1,
-                precoUnitario: 0,
-                total: 0
-            };
-            novosProdutos.push(novoProduto);
-            atualizarTabelaNovosProdutos();
+            const codigo = document.getElementById('novoProdutoCodigo').value;
+            const quantidade = parseInt(document.getElementById('novoProdutoQuantidade').value);
+
+            if (!codigo || isNaN(quantidade) || quantidade <= 0) {
+                alert('Por favor, insira um código de produto válido e uma quantidade maior que zero.');
+                return;
+            }
+
+            fetch(`/api/produto/${codigo}/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const novoProduto = {
+                        id: Date.now(),
+                        codigo: data.codigo,
+                        nome: data.nome,
+                        quantidade: quantidade,
+                        precoUnitario: data.preco,
+                        total: data.preco * quantidade
+                    };
+
+                    novosProdutos.push(novoProduto);
+                    atualizarTabelaNovosProdutos();
+                    
+                    // Limpar campos de entrada
+                    document.getElementById('novoProdutoCodigo').value = '';
+                    document.getElementById('novoProdutoQuantidade').value = '';
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Ocorreu um erro ao buscar informações do produto.');
+                });
         }
 
         function atualizarTabelaNovosProdutos() {
@@ -379,24 +419,16 @@
             novosProdutos.forEach(produto => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td><input type="text" class="form-control" value="${produto.nome}" onchange="atualizarNovoProduto(${produto.id}, 'nome', this.value)"></td>
-                    <td><input type="number" class="form-control" value="${produto.quantidade}" onchange="atualizarNovoProduto(${produto.id}, 'quantidade', this.value)"></td>
-                    <td><input type="number" class="form-control" value="${produto.precoUnitario}" onchange="atualizarNovoProduto(${produto.id}, 'precoUnitario', this.value)"></td>
-                    <td>${produto.total.toFixed(2)}</td>
+                    <td>${produto.codigo}</td>
+                    <td>${produto.nome}</td>
+                    <td>${produto.quantidade}</td>
+                    <td>R$ ${produto.precoUnitario.toFixed(2)}</td>
+                    <td>R$ ${produto.total.toFixed(2)}</td>
                     <td><button type="button" class="btn btn-danger btn-sm" onclick="removerNovoProduto(${produto.id})"><i class="fas fa-trash"></i></button></td>
                 `;
                 tbody.appendChild(tr);
             });
             calcularTotalAcerto();
-        }
-
-        function atualizarNovoProduto(id, campo, valor) {
-            const produto = novosProdutos.find(p => p.id === id);
-            if (produto) {
-                produto[campo] = valor;
-                produto.total = produto.quantidade * produto.precoUnitario;
-                atualizarTabelaNovosProdutos();
-            }
         }
 
         function removerNovoProduto(id) {
@@ -423,8 +455,8 @@
                 data_acerto: document.getElementById('dataAcerto').value,
                 produtos_vendedora: produtosVendedora.map((p, index) => ({
                     id: p.id,
-                    quantidade_vendida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(3) input`).value,
-                    quantidade_devolvida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(4) input`).value,
+                    quantidade_vendida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(4) input`).value,
+                    quantidade_devolvida: document.querySelector(`#produtosVendedoraTableBody tr:nth-child(${index + 1}) td:nth-child(5) input`).value,
                 })),
                 novos_produtos: novosProdutos,
                 comissao: document.getElementById('comissaoVendedora').value.replace('R$ ', ''),
